@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using UnityEngine;
+
+using IPA;
+using IPALogger = IPA.Logging.Logger;
+using IPAConfig = IPA.Config.Config;
+using PluginMetadata = IPA.Loader.PluginMetadata;
+using IPA.Config.Stores;
+
+using SiraUtil.Zenject;
+using HarmonyLib;
+
+namespace ProMod
+{
+    [Plugin(RuntimeOptions.SingleStartInit)]
+    public class Plugin
+    {
+        internal static Plugin Instance { get; private set; }
+        internal static PluginMetadata Metadata { get; private set; }
+        internal static IPALogger Log { get; private set; }
+        internal static ProConfig Config { get; private set; }
+
+        internal static Harmony harmony { get; private set; }
+
+        [Init]
+        public Plugin(IPALogger log, IPAConfig config, Zenjector zenjector)
+        {
+            harmony = new Harmony("com.puplip.promod");
+            Instance = this;
+            Log = log;
+            Config = config.Generated<ProConfig>();
+
+            ProAssets.Init();
+            ProHeight.Init();
+
+            zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();
+            zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
+        }
+
+    }
+}
