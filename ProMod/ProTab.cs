@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Parser;
 using Zenject;
 
 namespace ProMod
@@ -21,21 +22,23 @@ namespace ProMod
         [Inject]
         private StandardLevelDetailViewController _standardLevelDetailViewController;
 
+        [UIParams]
+        private BSMLParserParams _parserParams;
         private void Awake() {
             BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("ProMod", "ProMod.Resources.TabUI.bsml", this);
             gameObject.SetActive(false);
             Plugin.Log.Info("Bound ProTab to PlayerHeight");
             ProHeight.heightValueChange += ProHeight_heightValueChange;
+            BSMLParserParams parserParams;
         }
 
-        private void ProHeight_heightValueChange()
+        private float _playerHeight;
+        private void ProHeight_heightValueChange(float height)
         {
-            Plugin.Log.Info("Called ProHeight_heightValueChange");
-            if (UIComponent_PlayerHeight)
-            {
-                Plugin.Log.Info("Calling ReceiveValue");
-                UIComponent_PlayerHeight.ReceiveValue();
-            }
+            Plugin.Log.Info("Called ProTab ProHeight_heightValueChange");
+            _playerHeight = height;
+            _parserParams.EmitEvent("Event_PlayerHeight_Get");
+            
         }
 
         [UIValue("UIValue_ShowHUD")]
@@ -59,7 +62,7 @@ namespace ProMod
         {
             get
             {
-                return _playerDataModel.playerData.playerSpecificSettings.playerHeight * 100.0f;
+                return _playerHeight * 100.0f;
             }
             set
             {

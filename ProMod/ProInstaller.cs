@@ -26,4 +26,14 @@ namespace ProMod.ProInstaller
         }
     }
 
+    public class ProGameplayCoreInstaller : Installer
+    {
+        public override void InstallBindings()
+        {
+            Container.Bind<Stats.ProStatData>().FromInstance(new Stats.ProStatData()).AsSingle().NonLazy();
+            Container.Bind<Stats.ProStatUIController>().FromNewComponentOnNewPrefab(ProAssets.StandardStatView).AsSingle().NonLazy();
+            Container.Bind<Stats.ProStatCollector>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+        }
+    }
+
 }

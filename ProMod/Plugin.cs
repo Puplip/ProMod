@@ -36,10 +36,12 @@ namespace ProMod
             Config = config.Generated<ProConfig>();
 
             ProAssets.Init();
+            ProEffects.Init();
             ProHeight.Init();
 
             zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();
             zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
+            zenjector.Install<ProInstaller.ProGameplayCoreInstaller, GameplayCoreInstaller>();
         }
 
     }

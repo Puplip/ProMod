@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using IPA.Config.Stores;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
+using UnityEngine;
+
 
 namespace ProMod
 {
@@ -13,21 +15,26 @@ namespace ProMod
 
         public virtual bool ShowHeightGuide { get; set; } = false;
 
-        public class ColorConfig
+        public class ProColorConfig
         {
             public virtual float r { get; set; } = 0.0f;
             public virtual float g { get; set; } = 0.0f;
             public virtual float b { get; set; } = 0.0f;
 
-            public ColorConfig(float _r, float _g, float _b) {
+            public ProColorConfig(float _r, float _g, float _b) {
                 r = _r;
                 g = _g;
                 b = _b;
             }
+
+            public Color UnityGetUnityColor()
+            {
+                return new Color(r, g, b);
+            }
         }
 
         [UseConverter]
-        public virtual Dictionary<int, ColorConfig> HitScoreColors { get; set; } = new Dictionary<int, ColorConfig>();
+        public virtual Dictionary<int, ProColorConfig> HitScoreColors { get; set; } = new Dictionary<int, ProColorConfig>();
 
         public virtual bool HitScoreSizesEnabled { get; set; } = true;
 
@@ -44,12 +51,13 @@ namespace ProMod
         /// </summary>
         public virtual void OnReload()
         {
+
             if (HitScoreColors.Count == 0) {
-                HitScoreColors.Add(114, new ColorConfig(1.0f, 0.85f, 0.0f));
-                HitScoreColors.Add(112, new ColorConfig(0.0f, 0.50f, 1.0f));
-                HitScoreColors.Add(108, new ColorConfig(0.95f, 0.95f, 0.95f));
-                HitScoreColors.Add(100, new ColorConfig(1.0f, 0.0f, 0.25f));
-                HitScoreColors.Add(0, new ColorConfig(0.75f, 0.0f, 0.0f));
+                HitScoreColors.Add(114, new ProColorConfig(1.0f, 0.85f, 0.0f));
+                HitScoreColors.Add(112, new ProColorConfig(0.0f, 0.50f, 1.0f));
+                HitScoreColors.Add(108, new ProColorConfig(0.95f, 0.95f, 0.95f));
+                HitScoreColors.Add(100, new ProColorConfig(1.0f, 0.0f, 0.25f));
+                HitScoreColors.Add(0, new ProColorConfig(0.75f, 0.0f, 0.0f));
             }
 
             if (HitScoreSizes.Count == 0)

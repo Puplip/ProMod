@@ -47,7 +47,7 @@ namespace ProMod
                     }
                 }
 
-                transform.position = new Vector3(0.0f, 0.0f, 1.0f);
+                transform.position = new Vector3(0.0f, 0.0f, 1.5f);
 
             }
 

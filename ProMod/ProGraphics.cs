@@ -45,10 +45,10 @@ namespace ProMod
     public static class ProEffects
     {
 
-        private static bool NoteCutCoreEffectsSpawner_HandleNoteWasCut_Prefix() {
+        public static bool NoteCutCoreEffectsSpawner_HandleNoteWasCut_Prefix() {
             return false;
         }
-        private static void Init()
+        internal static void Init()
         {
             
             Plugin.harmony.Patch(

@@ -1,5 +1,5 @@
 <settings-container child-control-width='true' child-expand-width='true'>
     <toggle-setting text='Show HUD' value="UIValue_ShowHUD" apply-on-change="true" bind-value="true"></toggle-setting>
     <slider-setting id='UIComponent_PlayerHeight' text='Player Height' value="UIValue_PlayerHeight" apply-on-change="true" bind-value="true"
-        increment="1" min="140" max="300" show-buttons="true" ></slider-setting>
+        increment="1" min="140" max="300" show-buttons="true" get-event="Event_PlayerHeight_Get" set-event="Event_PlayerHeight_Set"></slider-setting>
 </settings-container>

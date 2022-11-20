@@ -45,8 +45,18 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="BeatmapCore">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BSML">
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GameplayCore">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -161,6 +171,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ProGraphics.cs" />
+    <Compile Include="Stats\ProStats.cs" />
+    <Compile Include="Stats\ProStatCollector.cs" />
+    <Compile Include="Stats\ProStatUIController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />

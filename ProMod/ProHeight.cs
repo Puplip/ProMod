@@ -13,12 +13,12 @@ namespace ProMod
 {
     static class ProHeight
     {
-        public static event Action heightValueChange;
+        public static event Action<float> heightValueChange;
 
-        public static bool PlayerHeightSettingsController_RefreshUI_Prefix(ref TextMeshProUGUI ____text, ref float ____value)
+        public static bool PlayerHeightSettingsController_RefreshUI_Prefix(PlayerHeightSettingsController __instance, ref TextMeshProUGUI ____text, ref float ____value)
         {
-            heightValueChange();
-            ____text.text = string.Format("{0}cm", Mathf.Round(____value * 100));
+            heightValueChange(____value);
+            ____text.text = string.Format("<size=85%>{0}cm", Mathf.Round(____value * 100));
             return false;
         }
 
@@ -30,9 +30,9 @@ namespace ProMod
                 prefix: new HarmonyMethod(typeof(ProHeight).GetMethod(nameof(ProHeight.PlayerHeightSettingsController_RefreshUI_Prefix))));
         }
 
-        private static void ProHeight_heightValueChange()
+        private static void ProHeight_heightValueChange(float height)
         {
-            Plugin.Log.Info("Called ProHeight_heightValueChange");
+            Plugin.Log.Info("Called ProHeight ProHeight_heightValueChange");
         }
     }
 }
