@@ -12,8 +12,7 @@ namespace ProMod.ProInstaller
     {
         public override void InstallBindings()
         {
-            Container.Bind<ProHUD>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
-            Container.Bind<ProClean>().FromNewComponentOnRoot().AsSingle().NonLazy();
+            Container.Bind<ProDustSweeper>().FromNewComponentOnRoot().AsSingle().NonLazy();
         }
     }
 
@@ -22,6 +21,7 @@ namespace ProMod.ProInstaller
     {
         public override void InstallBindings()
         {
+            Container.Bind<ProHeightMenu>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
             Container.Bind<ProTab>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
         }
     }
@@ -31,8 +31,9 @@ namespace ProMod.ProInstaller
         public override void InstallBindings()
         {
             Container.Bind<Stats.ProStatData>().FromInstance(new Stats.ProStatData()).AsSingle().NonLazy();
-            Container.Bind<Stats.ProStatUIController>().FromNewComponentOnNewPrefab(ProAssets.StandardStatView).AsSingle().NonLazy();
+            Container.Bind<Stats.ProStatController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.Bind<Stats.ProStatCollector>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            Container.Bind<ProHeightGameplay>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
         }
     }
 

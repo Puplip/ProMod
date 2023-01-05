@@ -11,9 +11,9 @@ using IPALogger = IPA.Logging.Logger;
 using IPAConfig = IPA.Config.Config;
 using PluginMetadata = IPA.Loader.PluginMetadata;
 using IPA.Config.Stores;
-
 using SiraUtil.Zenject;
 using HarmonyLib;
+using ProMod.Config;
 
 namespace ProMod
 {
@@ -23,25 +23,31 @@ namespace ProMod
         internal static Plugin Instance { get; private set; }
         internal static PluginMetadata Metadata { get; private set; }
         internal static IPALogger Log { get; private set; }
-        internal static ProConfig Config { get; private set; }
+        internal static ProConfig Config { get; set; }
 
         internal static Harmony harmony { get; private set; }
 
         [Init]
-        public Plugin(IPALogger log, IPAConfig config, Zenjector zenjector)
+        public Plugin(IPALogger log, Zenjector zenjector)
         {
+
             harmony = new Harmony("com.puplip.promod");
             Instance = this;
             Log = log;
-            Config = config.Generated<ProConfig>();
+
+            ProConfig.Load();
 
             ProAssets.Init();
-            ProEffects.Init();
-            ProHeight.Init();
+            ProEffectsPatch.Init();
+            ProHeightPatch.Init();
+            ProHUDPatch.Init();
+            ProCutScorePatch.Init();
+            Stats.ProStat.Init();
 
             zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();
             zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
             zenjector.Install<ProInstaller.ProGameplayCoreInstaller, GameplayCoreInstaller>();
+
         }
 
     }

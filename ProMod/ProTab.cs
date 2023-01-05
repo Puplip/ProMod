@@ -8,79 +8,113 @@ using BeatSaberMarkupLanguage.Components.Settings;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Parser;
 using Zenject;
+using TMPro;
 
 namespace ProMod
 {
     internal class ProTab : MonoBehaviour
     {
+
         [Inject]
         private PlayerDataModel _playerDataModel;
         [Inject]
-        private ProHUD _proHUD;
-        [Inject]
         private GameplaySetupViewController _gameplaySetupViewController;
-        [Inject]
-        private StandardLevelDetailViewController _standardLevelDetailViewController;
 
         [UIParams]
         private BSMLParserParams _parserParams;
+
         private void Awake() {
             BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("ProMod", "ProMod.Resources.TabUI.bsml", this);
             gameObject.SetActive(false);
             Plugin.Log.Info("Bound ProTab to PlayerHeight");
-            ProHeight.heightValueChange += ProHeight_heightValueChange;
-            BSMLParserParams parserParams;
+            ProHeightPatch.heightValueChange += ProHeightPatch_heightValueChange;
+
+
         }
 
         private float _playerHeight;
-        private void ProHeight_heightValueChange(float height)
+        private void ProHeightPatch_heightValueChange(float height)
         {
             Plugin.Log.Info("Called ProTab ProHeight_heightValueChange");
             _playerHeight = height;
             _parserParams.EmitEvent("Event_PlayerHeight_Get");
-            
         }
 
-        [UIValue("UIValue_ShowHUD")]
-        private bool UIValue_ShowHUD
+        [UIValue("UIValue_HeightGuideMenuEnabled")]
+        private bool UIValue_HeightGuideMenuEnabled
         {
-            get
-            {
-                return Plugin.Config.ShowHeightGuide;
-            }
+            get => Plugin.Config.HeightGuideMenuEnabled;
             set
             {
-                _proHUD.gameObject.SetActive(value);
-                Plugin.Config.ShowHeightGuide = value;
-                Plugin.Config.Changed();
+                Plugin.Config.HeightGuideMenuEnabled = value;
+                Plugin.Config.Save();
             }
         }
 
+        [UIValue("UIValue_HeightGuideGameplayEnabled")]
+        private bool UIValue_HeightGuideGameplayEnabled
+        {
+            get => Plugin.Config.HeightGuideGameplayEnabled;
+            set
+            {
+                Plugin.Config.HeightGuideGameplayEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
 
         [UIValue("UIValue_PlayerHeight")]
         private float UIValue_PlayerHeight
         {
-            get
-            {
-                return _playerHeight * 100.0f;
-            }
+            get => _playerHeight * 100.0f;
             set
             {
                 _playerDataModel.playerData.SetPlayerSpecificSettings(_playerDataModel.playerData.playerSpecificSettings.CopyWith(playerHeight: value / 100.0f));
-                if (_gameplaySetupViewController)
-                {
-                    _gameplaySetupViewController.Init();
-                }
+                _gameplaySetupViewController.Init();
             }
         }
 
-        [UIComponent("UIComponent_PlayerHeight")]
-        private GenericSetting UIComponent_PlayerHeight;
-
-/*        private void Update()
+        [UIValue("UIValue_ProStatsEnabled")]
+        private bool UIValue_ProStatsEnabled
         {
-            UIComponent_PlayerHeight.ReceiveValue();
-        }*/
+            get => Plugin.Config.ProStatsEnabled;
+            set
+            {
+                Plugin.Config.ProStatsEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
 
+        [UIValue("UIValue_StatColorsEnabled")]
+        private bool UIValue_StatColorsEnabled
+        {
+            get => Plugin.Config.StatColorsEnabled;
+            set
+            {
+                Plugin.Config.StatColorsEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
+
+        [UIValue("UIValue_CutScoresEnabled")]
+        private bool UIValue_CutScoresEnabled
+        {
+            get => Plugin.Config.CutScoresEnabled;
+            set
+            {
+                Plugin.Config.CutScoresEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
+
+        [UIValue("UIValue_GameplayEffectsDisabled")]
+        private bool UIValue_GameplayEffectsDisabled
+        {
+            get => Plugin.Config.GameplayEffectsDisabled;
+            set
+            {
+                Plugin.Config.GameplayEffectsDisabled = value;
+                Plugin.Config.Save();
+            }
+        }
     }
 }

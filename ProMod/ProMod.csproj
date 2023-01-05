@@ -65,6 +65,11 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="SiraUtil">
       <HintPath>$(BeatSaberDir)\Plugins\SiraUtil.dll</HintPath>
       <Private>False</Private>
@@ -157,13 +162,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ProDefaults.cs" />
+    <Compile Include="Config\ProConfigTypes.cs" />
+    <Compile Include="Patches\ProCutScorePatch.cs" />
+    <Compile Include="Patches\ProEffectsPatch.cs" />
+    <Compile Include="Patches\ProHeightPatch.cs" />
+    <Compile Include="Patches\ProHUDPatch.cs" />
     <Compile Include="ProHeight.cs" />
-    <Compile Include="ProHUD.cs" />
     <Compile Include="ProInstaller.cs" />
     <Compile Include="ProTab.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProAssets.cs" />
-    <Compile Include="ProConfig.cs" />
+    <Compile Include="Config\ProConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -171,9 +181,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ProGraphics.cs" />
-    <Compile Include="Stats\ProStats.cs" />
+    <Compile Include="ProUtil.cs" />
+    <Compile Include="Stats\ProStat.cs" />
+    <Compile Include="Stats\ProStatCounters.cs" />
+    <Compile Include="Stats\ProStatData.cs" />
     <Compile Include="Stats\ProStatCollector.cs" />
-    <Compile Include="Stats\ProStatUIController.cs" />
+    <Compile Include="Stats\ProStatController.cs" />
+    <Compile Include="Stats\ProStatsLocations.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -190,6 +204,7 @@
     <None Include="ProMod.csproj.user" Condition="Exists('ProMod.csproj.user')" />
     <EmbeddedResource Include="Resources\promod_assets" />
     <EmbeddedResource Include="Resources\TabUI.bsml" />
+    <EmbeddedResource Include="Resources\ProStat.bsml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">
