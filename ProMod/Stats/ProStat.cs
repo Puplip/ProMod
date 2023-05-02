@@ -3,10 +3,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Zenject;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using BeatSaberMarkupLanguage;
 using System.Collections.Generic;
 using System;
+using CameraUtils.Core;
 
 namespace ProMod.Stats
 {
@@ -47,35 +49,8 @@ namespace ProMod.Stats
             RegisterStat<ProStat_Combo>();
             RegisterStat<ProStat_ComboDamage>();
             RegisterStat<ProStat_TimeLeft>();
-
-            RegisterStat<ProStat_LeftTimeDependence>();
-            RegisterStat<ProStat_RightTimeDependence>();
-
-            RegisterStat<ProStat_LeftAcc>();
-            RegisterStat<ProStat_RightAcc>();
-
-            RegisterStat<ProStat_LeftAimScore>();
-            RegisterStat<ProStat_RightAimScore>();
-            RegisterStat<ProStat_LeftSwingScore>();
-            RegisterStat<ProStat_RightSwingScore>();
-            RegisterStat<ProStat_LeftPreSwingScore>();
-            RegisterStat<ProStat_RightPreSwingScore>();
-            RegisterStat<ProStat_LeftPostSwingScore>();
-            RegisterStat<ProStat_RightPostSwingScore>();
-
-
-            RegisterStat<ProStat_LeftAimDistance>();
-            RegisterStat<ProStat_RightAimDistance>();
-
-            RegisterStat<ProStat_LeftAimDamage>();
-            RegisterStat<ProStat_RightAimDamage>();
-
-            RegisterStat<ProStat_LeftSwingDamage>();
-            RegisterStat<ProStat_RightSwingDamage>();
-            RegisterStat<ProStat_LeftPreSwingDamage>();
-            RegisterStat<ProStat_RightPreSwingDamage>();
-            RegisterStat<ProStat_LeftPostSwingDamage>();
-            RegisterStat<ProStat_RightPostSwingDamage>();
+            RegisterStat<ProStat_LeftRightAcc>();/*
+            RegisterStat<ProStat_InstantAccBar>();*/
         }
     }
 
@@ -97,7 +72,7 @@ namespace ProMod.Stats
         protected abstract string UpdateText(ProStatData proStatData);
         public override void Init(ProStatLocationData statLocationData)
         {
-            gameObject.layer = (int)Camera2Layer.UI;
+            gameObject.layer = (int)VisibilityLayer.UI;
             transform.localPosition = statLocationData.Pos;
             transform.localEulerAngles = statLocationData.Angle;
             transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
@@ -106,11 +81,10 @@ namespace ProMod.Stats
             canvas.renderMode = RenderMode.WorldSpace;
             RectTransform rectTransform = transform as RectTransform;
             rectTransform.sizeDelta = statLocationData.Size * 100.0f;
-            Plugin.Log.Info("rectTransform.sizeDelta: [" + rectTransform.sizeDelta.x + ", " + rectTransform.sizeDelta.y + "]");
 
             text = BeatSaberUI.CreateText((RectTransform)canvas.transform, "", Vector2.zero);
             text.rectTransform.sizeDelta = statLocationData.Size * 100.0f;
-            text.fontSize = statLocationData.Size.y * 70.0f;
+            text.fontSize = statLocationData.Size.y * 62.0f;
             text.alignment = TextAlignmentOptions.Center;
 
         }
@@ -141,15 +115,25 @@ namespace ProMod.Stats
             int ms = Mathf.RoundToInt(v);
             return string.Format("<size=100%>{0}<size=60%>ms", ms);
         }
-        protected string RatioValue(float top,float bottom)
+        protected static string RatioValue(float top,float bottom)
         {
             return RatioValue(bottom != 0.0f ? top / bottom : 1.0f);
         }
-        protected string RatioValue(float v)
+        protected static string SmallRatioValue(float top, float bottom)
+        {
+            return SmallRatioValue(bottom != 0.0f ? top / bottom : 1.0f);
+        }
+        protected static string RatioValue(float v)
         {
             int i = Mathf.RoundToInt(v * 10000.0f);
             return string.Format("<size=100%>{0}<size=60%>{1:00}", Mathf.FloorToInt(i / 100), Mathf.RoundToInt(i % 100));
         }
+        protected static string SmallRatioValue(float v)
+        {
+            int i = Mathf.RoundToInt(v * 10000.0f);
+            return string.Format("<size=60%>{0}<size=40%>{1:00}", Mathf.FloorToInt(i / 100), Mathf.RoundToInt(i % 100));
+        }
+
         protected static string AngleValue(float v)
         {
             int i = Mathf.RoundToInt(v * 100.0f);
@@ -161,11 +145,13 @@ namespace ProMod.Stats
         }
         protected static string RatioColor(float acc)
         {
+            float roundedAcc = Mathf.Round(acc * 10000f) / 10000f;
+
             if (Plugin.Config.StatColorsEnabled)
             {
                 foreach (Config.ProAccColorConfig accColor in Plugin.Config.AccColors)
                 {
-                    if (Mathf.FloorToInt(acc * 100.0f) >= accColor.score)
+                    if (Mathf.FloorToInt(roundedAcc * 100.0f) >= accColor.score)
                     {
                         return "<color=#" + ColorUtility.ToHtmlStringRGB(accColor.color) + ">";
                     }
@@ -173,9 +159,51 @@ namespace ProMod.Stats
             }
             return "";
         }
+
+        protected static string DoubleRatioColor(float acc1,float acc2)
+        {
+            return RatioColor(acc1) + SmallRatioValue(acc1) + "<size=60%><color=#FFFFFF>|" + RatioColor(acc2) + SmallRatioValue(acc2);
+        }
+
         protected override string UpdateText(ProStatData proStatData)
         {
             return "<line-height=55%><size=30%>" + Title + "\n" + Value(proStatData);
         }
+    }
+
+    public abstract class ProStatRatioBar : ProStat {
+
+        protected Image ratioBarImage; 
+        public override void Init(ProStatLocationData statLocationData)
+        {
+            gameObject.layer = (int)VisibilityLayer.UI;
+            transform.localPosition = statLocationData.Pos;
+            transform.localEulerAngles = statLocationData.Angle;
+            transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+
+            Canvas canvas = gameObject.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            RectTransform rectTransform = transform as RectTransform;
+            rectTransform.sizeDelta = statLocationData.Size * 100.0f;
+
+            ratioBarImage = new GameObject("RatioBarImage").AddComponent<Image>();
+            RectTransform imageRectTransform = ratioBarImage.transform as RectTransform;
+            imageRectTransform.SetParent(canvas.transform,false);
+            imageRectTransform.sizeDelta = statLocationData.Size * 100.0f;
+
+            Texture2D whiteTex = Texture2D.whiteTexture;
+            ratioBarImage.sprite = Sprite.Create(whiteTex, new Rect(0, 0, whiteTex.width, whiteTex.height), Vector2.one * 0.5f, 100, 1);
+            ratioBarImage.type = Image.Type.Filled;
+            ratioBarImage.fillMethod = Image.FillMethod.Horizontal;
+            ratioBarImage.color = Color.white;
+            ratioBarImage.fillAmount = 1.0f;
+        }
+
+        public override void OnData(ProStatData proStatData)
+        {
+            ratioBarImage.fillAmount = UpdateRatio(proStatData);
+        }
+
+        public abstract float UpdateRatio(ProStatData proStatData);
     }
 }

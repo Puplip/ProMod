@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Zenject;
+using CameraUtils.Core;
 
 namespace ProMod
 {
-
     public abstract class ProHeight : MonoBehaviour
     {
         internal void UpdateJumpOffsetY(float jumpOffsetY)
         {
+
             foreach (Transform child in transform.GetComponentsInChildren<Transform>(true))
             {
                 switch (child.name)
@@ -41,27 +42,28 @@ namespace ProMod
 
         private bool _childrenActive;
 
-        private void Awake()
+        private void Start()
         {
-            ProUtil.SetLayerRecursive(gameObject, Camera2Layer.UI);
+            ProUtil.SetLayerRecursive(gameObject, VisibilityLayer.HmdOnlyAndReflected);
+            _childrenActive = true;
+            SetChildrenActiveState(false);
         }
 
-        private void Update() {
 
-            if (!Plugin.Config.HeightGuideMenuEnabled) {
-                for(var i = 0; i < transform.childCount; i++)
-                {
-                    transform.GetChild(i).gameObject.SetActive(false);
-                }
-                _childrenActive = false;
-            } else if(!_childrenActive)
+        private void SetChildrenActiveState(bool childActiveState)
+        {
+            if(childActiveState == _childrenActive) { return; }
+            for (var i = 0; i < transform.childCount; i++)
             {
-                for (var i = 0; i < transform.childCount; i++)
-                {
-                    transform.GetChild(i).gameObject.SetActive(true);
-                }
-                _childrenActive = true;
+                transform.GetChild(i).gameObject.SetActive(childActiveState);
             }
+            _childrenActive = childActiveState;
+        }
+
+        private void Update()
+        {
+
+            SetChildrenActiveState(Plugin.Config.HeightGuideEnabled);
 
             if (_playerHeight != _playerDataModel.playerData.playerSpecificSettings.playerHeight) {
 
@@ -73,9 +75,7 @@ namespace ProMod
                 transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.HeightGuideOffset);
 
             }
-
         }
-
     }
 
     public class ProHeightGameplay : ProHeight
@@ -84,22 +84,31 @@ namespace ProMod
         [Inject]
         private IJumpOffsetYProvider _jumpOffsetYProvider;
 
+        [Inject]
+        private MainCamera mainCamera;
+
         private void Awake()
         {
-            if (!Plugin.Config.HeightGuideGameplayEnabled)
+            if (!Plugin.Config.HeightGuideEnabled)
             {
                 gameObject.SetActive(false);
                 return;
             }
 
-            ProUtil.SetLayerRecursive(gameObject,Camera2Layer.FirstPerson);
+            ProUtil.SetLayerRecursive(gameObject, VisibilityLayer.HmdOnlyAndReflected);
 
             UpdateJumpOffsetY(_jumpOffsetYProvider.jumpOffsetY);
 
             transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.HeightGuideLength);
             transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.HeightGuideOffset);
 
+/*            Invoke("DumpVisible", 30.0f);*/
         }
+
+/*        private void DumpVisible()
+        {
+            ProUtil.DumpAllGameObjectsWithComponent<Renderer>("LookingForClouds", mainCamera.camera.cullingMask);
+        }*/
 
     }
 }

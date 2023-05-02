@@ -12,52 +12,62 @@ using TMPro;
 
 namespace ProMod
 {
-    internal class ProTab : MonoBehaviour
+    public class ProTabHooks : IInitializable
     {
 
         [Inject]
         private PlayerDataModel _playerDataModel;
+
         [Inject]
         private GameplaySetupViewController _gameplaySetupViewController;
+
+        public void Initialize()
+        {
+            ProTab.Instance._playerDataModel = _playerDataModel;
+            ProTab.Instance._gameplaySetupViewController = _gameplaySetupViewController;
+        }
+    }
+    internal class ProTab
+    {
+        internal static ProTab Instance;
+
+        internal PlayerDataModel _playerDataModel;
+
+        internal GameplaySetupViewController _gameplaySetupViewController;
 
         [UIParams]
         private BSMLParserParams _parserParams;
 
-        private void Awake() {
-            BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("ProMod", "ProMod.Resources.TabUI.bsml", this);
-            gameObject.SetActive(false);
-            Plugin.Log.Info("Bound ProTab to PlayerHeight");
-            ProHeightPatch.heightValueChange += ProHeightPatch_heightValueChange;
+        internal static void Init()
+        {
+            if(Instance != null) { return; }
+            Instance = new ProTab();
 
-
+            BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("ProMod", "ProMod.Resources.TabUI.bsml", Instance);
+            ProHeightPatch.heightValueChange += Instance.ProHeightPatch_heightValueChange;
         }
 
         private float _playerHeight;
         private void ProHeightPatch_heightValueChange(float height)
         {
-            Plugin.Log.Info("Called ProTab ProHeight_heightValueChange");
+            Plugin.Log.Info("ProHeightPatch_heightValueChange");
             _playerHeight = height;
-            _parserParams.EmitEvent("Event_PlayerHeight_Get");
-        }
-
-        [UIValue("UIValue_HeightGuideMenuEnabled")]
-        private bool UIValue_HeightGuideMenuEnabled
-        {
-            get => Plugin.Config.HeightGuideMenuEnabled;
-            set
+            if(_parserParams != null)
             {
-                Plugin.Config.HeightGuideMenuEnabled = value;
-                Plugin.Config.Save();
+                _parserParams.EmitEvent("Event_PlayerHeight_Get");
+            } else
+            {
+                Plugin.Log.Info("_parserParams is null");
             }
         }
 
-        [UIValue("UIValue_HeightGuideGameplayEnabled")]
-        private bool UIValue_HeightGuideGameplayEnabled
+        [UIValue("UIValue_HeightGuideEnabled")]
+        private bool UIValue_HeightGuideEnabled
         {
-            get => Plugin.Config.HeightGuideGameplayEnabled;
+            get => Plugin.Config.HeightGuideEnabled;
             set
             {
-                Plugin.Config.HeightGuideGameplayEnabled = value;
+                Plugin.Config.HeightGuideEnabled = value;
                 Plugin.Config.Save();
             }
         }
@@ -69,7 +79,44 @@ namespace ProMod
             set
             {
                 _playerDataModel.playerData.SetPlayerSpecificSettings(_playerDataModel.playerData.playerSpecificSettings.CopyWith(playerHeight: value / 100.0f));
-                _gameplaySetupViewController.Init();
+                
+                if(_gameplaySetupViewController != null)
+                {
+                    _gameplaySetupViewController.Init();
+                }
+            }
+        }
+
+        [UIValue("UIValue_RTCurveEnabled")]
+        private bool UIValue_RTCurveEnabled
+        {
+            get => Plugin.Config.RTCurveEnabled;
+            set
+            {
+                Plugin.Config.RTCurveEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
+
+        [UIValue("UIValue_FixedRTEnabled")]
+        private bool UIValue_FixedRTEnabled
+        {
+            get => Plugin.Config.FixedRTEnabled;
+            set
+            {
+                Plugin.Config.FixedRTEnabled = value;
+                Plugin.Config.Save();
+            }
+        }
+
+        [UIValue("UIValue_FixedRTValue")]
+        private float UIValue_FixedRTValue
+        {
+            get => Plugin.Config.FixedRTValue;
+            set
+            {
+                Plugin.Config.FixedRTValue = value;
+                Plugin.Config.Save();
             }
         }
 
@@ -113,6 +160,17 @@ namespace ProMod
             set
             {
                 Plugin.Config.GameplayEffectsDisabled = value;
+                Plugin.Config.Save();
+            }
+        }
+
+        [UIValue("UIValue_DisableEnvironmentInHMD")]
+        private bool UIValue_HeightGuideGameplayEnabled
+        {
+            get => Plugin.Config.DisableEnvironmentInHMD;
+            set
+            {
+                Plugin.Config.DisableEnvironmentInHMD = value;
                 Plugin.Config.Save();
             }
         }

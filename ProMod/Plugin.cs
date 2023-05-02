@@ -42,8 +42,11 @@ namespace ProMod
             ProHeightPatch.Init();
             ProHUDPatch.Init();
             ProCutScorePatch.Init();
-            Stats.ProStat.Init();
+            ProRTPatch.Init();
 
+            ProTab.Init();
+
+            Stats.ProStat.Init();
             zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();
             zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
             zenjector.Install<ProInstaller.ProGameplayCoreInstaller, GameplayCoreInstaller>();

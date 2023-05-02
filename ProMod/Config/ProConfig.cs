@@ -13,18 +13,20 @@ namespace ProMod.Config
 {
     public class ProConfig
     {
-        public bool HeightGuideMenuEnabled  = false;
-        public bool HeightGuideGameplayEnabled  = true;
-        public float HeightGuideOffset = 1.0f;
+        public bool HeightGuideEnabled  = true;
+        public float HeightGuideOffset = 0.75f;
         public float HeightGuideLength  = 1.0f;
         public bool CutScoresEnabled = true;
-        public bool JumpDistanceCurveEnabled = true;
+        public bool RTCurveEnabled = true;
+        public bool FixedRTEnabled = false;
+        public float FixedRTValue = 420.0f;
         public bool ProStatsEnabled = true;
         public bool StatColorsEnabled = true;
         public bool GameplayEffectsDisabled = true;
+        public bool DisableEnvironmentInHMD = true;
 
         public List<ProCutScoreConfig> CutScores;
-        public List<ProReactionTimePoint> JumpDistanceCurve;
+        public List<ProReactionTimePoint> RTCurve;
         public List<ProAccColorConfig> AccColors;
         public List<ProStatConfig> ProStats;
 
@@ -33,7 +35,7 @@ namespace ProMod.Config
 
         public static void Load()
         {
-            if (!File.Exists(filePath))
+            if (!File.Exists(filePath) || true)
             {
                 Plugin.Log.Info("Creating New ProMod Config...");
                 Plugin.Config = new ProConfig();
@@ -58,9 +60,9 @@ namespace ProMod.Config
             {
                 CutScores = ProDefaults.CutScores();
             }
-            if(JumpDistanceCurve == null)
+            if(RTCurve == null)
             {
-                JumpDistanceCurve = ProDefaults.JumpDistanceCurve();
+                RTCurve = ProDefaults.RTCurve();
             }
             if (AccColors == null)
             {
@@ -73,7 +75,7 @@ namespace ProMod.Config
 
             ProStats.RemoveAll((x) => x == null || x.name == null || x.customLocation == null);
 
-            JumpDistanceCurve.RemoveAll((x) => x == null);
+            RTCurve.RemoveAll((x) => x == null);
 
             CutScores.RemoveAll((x) => x == null);
 
@@ -129,18 +131,18 @@ namespace ProMod.Config
 
             HashSet<float> njsSet = new HashSet<float>();
 
-            for (int i = 0; i < JumpDistanceCurve.Count; i++)
+            for (int i = 0; i < RTCurve.Count; i++)
             {
-                if (JumpDistanceCurve[i].jd < 0.0f || JumpDistanceCurve[i].njs < 0.0f)
+                if (RTCurve[i].rt < 100.0f || RTCurve[i].njs < 0.0f)
                 {
-                    Plugin.Log.Info("Removing Invalid JumpDistance Config: " + JumpDistanceCurve[i].njs + "njs");
-                    JumpDistanceCurve.RemoveAt(i);
+                    Plugin.Log.Info("Removing Invalid JumpDistance Config: " + RTCurve[i].njs + "njs");
+                    RTCurve.RemoveAt(i);
                     i--;
                 }
-                else if (njsSet.Contains(JumpDistanceCurve[i].njs))
+                else if (njsSet.Contains(RTCurve[i].njs))
                 {
-                    Plugin.Log.Info("Removing Duplicate JumpDistance Config: " + JumpDistanceCurve[i].njs + "njs");
-                    JumpDistanceCurve.RemoveAt(i);
+                    Plugin.Log.Info("Removing Duplicate JumpDistance Config: " + RTCurve[i].njs + "njs");
+                    RTCurve.RemoveAt(i);
                     i--;
                 }
                 else
@@ -149,7 +151,12 @@ namespace ProMod.Config
                 }
             }
 
-            JumpDistanceCurve.Sort();
+            RTCurve.Sort();
+
+            if(RTCurve.Count < 2)
+            {
+                RTCurve = ProDefaults.RTCurve();
+            }
         }
 
     }

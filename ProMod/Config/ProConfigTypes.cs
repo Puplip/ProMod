@@ -104,19 +104,19 @@ namespace ProMod.Config
 
         [JsonProperty("NJS")]
         public float njs = 10.0f;
-        [JsonProperty("JD")]
-        public float jd = 18.0f;
+        [JsonProperty("RT")]
+        public float rt = 420.0f;
 
-        public ProReactionTimePoint(float _njs, float _jd)
+        public ProReactionTimePoint(float _njs, float _rt)
         {
             njs = _njs;
-            jd = _jd;
+            rt = _rt;
         }
         public ProReactionTimePoint() { }
 
         public int CompareTo(ProReactionTimePoint other)
         {
-            return other.njs.CompareTo(njs);
+            return njs.CompareTo(other.njs);
         }
     }
 
@@ -129,7 +129,7 @@ namespace ProMod.Config
         public Stats.ProStatLocation location = Stats.ProStatLocation.Custom;
 
         [JsonProperty("CustomLocation")]
-        public Stats.ProStatLocationData customLocation { get; } = new Stats.ProStatLocationData();
+        public Stats.ProStatLocationData customLocation { get; set; } = new Stats.ProStatLocationData();
 
         public ProStatConfig(string _name, Stats.ProStatLocation _location)
         {

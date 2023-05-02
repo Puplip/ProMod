@@ -12,18 +12,17 @@ namespace ProMod
 {
     public static class ProHUDPatch
     {
-        public static bool CoreGameHUDController_Start_Prefix(CoreGameHUDController __instance)
+        public static bool CoreGameHUDController_Initialize_Prefix(CoreGameHUDController __instance)
         {
             __instance.gameObject.SetActive(!Plugin.Config.ProStatsEnabled);
-            Plugin.Log.Info("CoreGameHUDController Start " + !Plugin.Config.ProStatsEnabled);
             return !Plugin.Config.ProStatsEnabled;
         }
 
         internal static void Init()
         {
             Plugin.harmony.Patch(
-                original: typeof(CoreGameHUDController).GetMethod(nameof(CoreGameHUDController.Start)),
-                prefix: new HarmonyMethod(typeof(ProHUDPatch).GetMethod(nameof(ProHUDPatch.CoreGameHUDController_Start_Prefix)))
+                original: typeof(CoreGameHUDController).GetMethod(nameof(CoreGameHUDController.Initialize)),
+                prefix: new HarmonyMethod(typeof(ProHUDPatch).GetMethod(nameof(ProHUDPatch.CoreGameHUDController_Initialize_Prefix)))
             );
         }
 

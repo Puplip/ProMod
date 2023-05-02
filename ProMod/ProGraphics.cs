@@ -7,33 +7,25 @@ using UnityEngine;
 using Zenject;
 using System.Reflection;
 using HarmonyLib;
+using System.IO;
+
+/*using BeatSaberMarkupLanguage;*/
+using CameraUtils.Core;
 
 namespace ProMod
 {
-
-    /// <summary>
-    /// Remove Dust Particle Effect
-    /// </summary>
-    public class ProDustSweeper : MonoBehaviour
+    public class ProGameplayCamera : IInitializable
     {
-
-        private float lastParticleSweep = float.MinValue;
-
-        private void Update()
+        [Inject]
+        private MainCamera _mainCamera;
+        public void Initialize()
         {
-            if (lastParticleSweep + 2.0f < Time.time)
-            {
-                foreach (ParticleSystem ps in Resources.FindObjectsOfTypeAll<ParticleSystem>())
-                {
-                    if (ps.name == "DustPS" && ps.gameObject.activeSelf)
-                    {
-                        ps.gameObject.SetActive(false);
-                        Plugin.Log.Info("Cleaned up some dust...");
-                    }
-                }
-                lastParticleSweep = Time.time + 2.0f;
-            }
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Environment));
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.NeonLight));
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Default));
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Skybox));
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.NonReflectedParticles));
+            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Water));
         }
     }
-
 }

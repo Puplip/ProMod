@@ -43,7 +43,6 @@ namespace ProMod.Stats
         private void Awake()
         {
 
-            Plugin.Log.Info("ProStatController Awake");
 
             _statData.onChangeEvent += ProStatData_onChangeEvent;
 

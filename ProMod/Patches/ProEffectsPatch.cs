@@ -16,7 +16,6 @@ namespace ProMod
     /// </summary>
     public static class ProEffectsPatch
     {
-
         public static bool EffectDisabler_Prefix()
         {
             return !Plugin.Config.GameplayEffectsDisabled;

@@ -12,7 +12,6 @@ namespace ProMod.ProInstaller
     {
         public override void InstallBindings()
         {
-            Container.Bind<ProDustSweeper>().FromNewComponentOnRoot().AsSingle().NonLazy();
         }
     }
 
@@ -22,7 +21,7 @@ namespace ProMod.ProInstaller
         public override void InstallBindings()
         {
             Container.Bind<ProHeightMenu>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
-            Container.Bind<ProTab>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<ProTabHooks>().AsSingle().NonLazy();
         }
     }
 
@@ -30,10 +29,32 @@ namespace ProMod.ProInstaller
     {
         public override void InstallBindings()
         {
-            Container.Bind<Stats.ProStatData>().FromInstance(new Stats.ProStatData()).AsSingle().NonLazy();
-            Container.Bind<Stats.ProStatController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-            Container.Bind<Stats.ProStatCollector>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-            Container.Bind<ProHeightGameplay>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
+            if (Plugin.Config.ProStatsEnabled)
+            {
+                Container.Bind<Stats.ProStatData>().AsSingle().NonLazy();
+                Container.Bind<Stats.ProStatController>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+                Container.Bind<Stats.ProStatCollector>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
+            } else
+            {
+                Container.Unbind<Stats.ProStatData>();
+                Container.Unbind<Stats.ProStatController>();
+                Container.Unbind<Stats.ProStatCollector>();
+            }
+
+            if (Plugin.Config.DisableEnvironmentInHMD)
+            {
+                Container.BindInterfacesAndSelfTo<ProGameplayCamera>().AsSingle().NonLazy();
+            } else
+            {
+                Container.UnbindInterfacesTo<ProGameplayCamera>();
+            }
+            if (Plugin.Config.HeightGuideEnabled)
+            {
+                Container.Bind<ProHeightGameplay>().FromNewComponentOnNewPrefab(ProAssets.HeightGuide).AsSingle().NonLazy();
+            } else
+            {
+                Container.Unbind<ProHeightGameplay>();
+            }
         }
     }
 

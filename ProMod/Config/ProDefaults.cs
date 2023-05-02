@@ -12,15 +12,13 @@ namespace ProMod.Config
 {
     internal static class ProDefaults
     {
-        internal static List<ProReactionTimePoint> JumpDistanceCurve()
+        internal static List<ProReactionTimePoint> RTCurve()
         {
             return new List<ProReactionTimePoint>()
             {
-                new ProReactionTimePoint(0.0f,16.0f),
-                new ProReactionTimePoint(18.0f,17.0f),
-                new ProReactionTimePoint(20.0f,18.0f),
-                new ProReactionTimePoint(22.0f,19.0f),
-                new ProReactionTimePoint(24.0f,20.0f)
+                new ProReactionTimePoint(0.0f,500.0f),
+                new ProReactionTimePoint(18.0f,450.0f),
+                new ProReactionTimePoint(22.0f,400.0f)
             };
         }
 
@@ -58,9 +56,10 @@ namespace ProMod.Config
                 new ProStatConfig("ProStat_EstimateAcc",ProStatLocation.MainHUD_TopRight),
                 new ProStatConfig("ProStat_Combo",ProStatLocation.MainHUD_TopLeft),
                 new ProStatConfig("ProStat_TimeLeft",ProStatLocation.MainHUD_BottomLeft),
-                new ProStatConfig("ProStat_MaxAcc",ProStatLocation.MainHUD_BottomRight),
+                new ProStatConfig("ProStat_LeftRightAcc",ProStatLocation.MainHUD_BottomRight),/*
+                new ProStatConfig("ProStat_InstantAccBar",ProStatLocation.BottomBar)*/
 
-                new ProStatConfig("ProStat_LeftAcc",ProStatLocation.RearLeftPanel_TopLeft),
+                /*new ProStatConfig("ProStat_LeftAcc",ProStatLocation.RearLeftPanel_TopLeft),
                 new ProStatConfig("ProStat_LeftTimeDependence",ProStatLocation.RearLeftPanel_TopRight),
                 new ProStatConfig("ProStat_LeftAimDamage",ProStatLocation.RearLeftPanel_BottomLeft),
                 new ProStatConfig("ProStat_LeftSwingDamage",ProStatLocation.RearLeftPanel_BottomRight),
@@ -68,7 +67,7 @@ namespace ProMod.Config
                 new ProStatConfig("ProStat_RightAcc",ProStatLocation.RearRightPanel_TopLeft),
                 new ProStatConfig("ProStat_RightTimeDependence",ProStatLocation.RearRightPanel_TopRight),
                 new ProStatConfig("ProStat_RightAimDamage",ProStatLocation.RearRightPanel_BottomLeft),
-                new ProStatConfig("ProStat_RightSwingDamage",ProStatLocation.RearRightPanel_BottomRight)
+                new ProStatConfig("ProStat_RightSwingDamage",ProStatLocation.RearRightPanel_BottomRight)*/
             };
         }
 

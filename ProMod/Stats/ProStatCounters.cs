@@ -1,4 +1,5 @@
-﻿namespace ProMod.Stats
+﻿using UnityEngine;
+namespace ProMod.Stats
 {
     public class ProStat_InstantAcc : ProStatTitleValue
     {
@@ -9,23 +10,42 @@
         }
     }
 
+/*    public class ProStat_InstantAccBar : ProStatRatioBar
+    {
+        public override float UpdateRatio(ProStatData proStatData)
+        {
+            return proStatData.acc;
+        }
+    }*/
+
     public class ProStat_MaxAcc : ProStatTitleValue
     {
         protected override string Title { get; set; } = "Max ACC";
         protected override string Value(ProStatData proStatData)
         {
-            float acc = (float)(proStatData.maxBeatmapScore - proStatData.maxCurrentScore + proStatData.score) / (float)proStatData.maxBeatmapScore;
-            return RatioColor(acc) + RatioValue(acc);
+            float maxAcc = proStatData.maxBeatmapScore > 0 ? (float)(proStatData.maxBeatmapScore - proStatData.maxCurrentScore + proStatData.score) / (float)proStatData.maxBeatmapScore : 1.0f;
+            return RatioColor(maxAcc) + RatioValue(maxAcc);
         }
     }
 
     public class ProStat_EstimateAcc : ProStatTitleValue
     {
-        protected override string Title { get; set; } = "Est ACC";
+        protected override string Title { get; set; } = "ACC";
         protected override string Value(ProStatData proStatData)
         {
-            float acc = ((float)(proStatData.maxBeatmapScore - proStatData.maxCurrentScore) * proStatData.CutStats.CutScore.Average() / 115.0f + (float)proStatData.score) / (float)proStatData.maxBeatmapScore;
-            return RatioColor(acc) + RatioValue(acc);
+            
+            if (proStatData.comboDamage == 0)
+            {
+                Title = "ACC";
+                float instantAcc = proStatData.maxCurrentScore > 0 ? (float)proStatData.score / (float)proStatData.maxCurrentScore : 1.0f;
+                return RatioColor(instantAcc) + RatioValue(instantAcc);
+            }
+
+            Title = "Est ACC";
+            float fullComboAcc = ((float)proStatData.score + (float)proStatData.comboDamage) / (float)proStatData.maxCurrentScore;
+            float estimatedFinalAcc = ((float)(proStatData.maxBeatmapScore - proStatData.maxCurrentScore) * fullComboAcc + (float)proStatData.score) / (float)proStatData.maxBeatmapScore;
+            return RatioColor(estimatedFinalAcc) + RatioValue(estimatedFinalAcc);
+
         }
     }
 
@@ -34,6 +54,7 @@
         protected override string Title { get; set; } = "Combo";
         protected override string Value(ProStatData proStatData)
         {
+            Title = proStatData.comboDamage > 0 ? "Combo" : "Full Combo";
             return IntValue(proStatData.combo);
         }
     }
@@ -43,7 +64,7 @@
         protected override string Title { get; set; } = "Combo Dmg";
         protected override string Value(ProStatData proStatData)
         {
-            return RatioValue((float)proStatData.comboDamage / (float)proStatData.maxBeatmapScore);
+            return RatioValue((float)proStatData.comboDamage , (float)proStatData.maxBeatmapScore);
         }
     }
 
@@ -56,27 +77,18 @@
         }
     }
 
-    public class ProStat_LeftAcc : ProStatTitleValue
+    public class ProStat_LeftRightAcc : ProStatTitleValue
     {
-        protected override string Title { get; set; } = "L ACC";
+        protected override string Title { get; set; } = "LR ACC";
         protected override string Value(ProStatData proStatData)
         {
-            float acc = proStatData.CutStatsBySaber[SaberType.SaberA].CutScore.Average() / 115.0f;
-            return RatioColor(acc) + RatioValue(acc);
+            float lacc = proStatData.MaxCurrentScoreBySaber[SaberType.SaberA] > 0 ? (float)(proStatData.CurrentScoreBySaber[SaberType.SaberA] + proStatData.ComboDamageBySaber[SaberType.SaberA]) / (float)proStatData.MaxCurrentScoreBySaber[SaberType.SaberA] : 1.0f;
+            float racc = proStatData.MaxCurrentScoreBySaber[SaberType.SaberB] > 0 ? (float)(proStatData.CurrentScoreBySaber[SaberType.SaberB] + proStatData.ComboDamageBySaber[SaberType.SaberB]) / (float)proStatData.MaxCurrentScoreBySaber[SaberType.SaberB] : 1.0f;
+            return DoubleRatioColor(lacc,racc);
         }
     }
 
-    public class ProStat_RightAcc : ProStatTitleValue
-    {
-        protected override string Title { get; set; } = "R ACC";
-        protected override string Value(ProStatData proStatData)
-        {
-            float acc = proStatData.CutStatsBySaber[SaberType.SaberB].CutScore.Average() / 115.0f;
-            return RatioColor(acc) + RatioValue(acc);
-        }
-    }
-
-    public class ProStat_LeftSwingScore : ProStatTitleValue
+    /*public class ProStat_LeftSwingScore : ProStatTitleValue
     {
         protected override string Title { get; set; } = "L Swing";
         protected override string Value(ProStatData proStatData)
@@ -233,7 +245,7 @@
         protected override string Value(ProStatData proStatData)
         {
             ProCutStats cutStats = proStatData.CutStatsBySaber[SaberType.SaberA];
-            return RatioValue((float)cutStats.PostSwingDamage.Value() / (float)proStatData.maxBeatmapScore);
+            return RatioValue((float)cutStats.PostSwingDamage.Value() , (float)proStatData.maxCurrentScore);
         }
     }
 
@@ -243,7 +255,7 @@
         protected override string Value(ProStatData proStatData)
         {
             ProCutStats cutStats = proStatData.CutStatsBySaber[SaberType.SaberB];
-            return RatioValue((float)cutStats.PostSwingDamage.Value() / (float)proStatData.maxBeatmapScore);
+            return RatioValue((float)cutStats.PostSwingDamage.Value() , (float)proStatData.maxCurrentScore);
         }
     }
 
@@ -253,7 +265,7 @@
         protected override string Value(ProStatData proStatData)
         {
             ProCutStats cutStats = proStatData.CutStatsBySaber[SaberType.SaberA];
-            return RatioValue((float)cutStats.AimDamage.Value() / (float)proStatData.maxBeatmapScore);
+            return RatioValue((float)cutStats.AimDamage.Value() , (float)proStatData.maxCurrentScore);
         }
     }
 
@@ -263,7 +275,7 @@
         protected override string Value(ProStatData proStatData)
         {
             ProCutStats cutStats = proStatData.CutStatsBySaber[SaberType.SaberB];
-            return RatioValue((float)cutStats.AimDamage.Value() / (float)proStatData.maxBeatmapScore);
+            return RatioValue((float)cutStats.AimDamage.Value() , (float)proStatData.maxCurrentScore);
         }
-    }
+    }*/
 }

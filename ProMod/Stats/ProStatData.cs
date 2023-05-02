@@ -162,7 +162,12 @@ namespace ProMod.Stats
         public ProIntStat CutScoreSwing;
         public ProIntStat CutScorePreSwing;
         public ProIntStat CutScorePostSwing;
+
+        public ProRealStat PreSwingRating;
+        public ProRealStat PostSwingRating;
+
         public ProRealStat TimeDependence;
+        public ProRealStat TimeDependenceAngle;
         public ProRealStat TimeDeviation;
         public ProRealStat CutDirDeviation;
         public ProRealStat CutAngle;
@@ -172,7 +177,11 @@ namespace ProMod.Stats
         public ProIntStat PostSwingDamage;
         public ProIntStat AimDamage;
 
-        public ProIntHistogram CutScoreHistogram = new ProIntHistogram(115);
+        public ProIntHistogram CutScoreHistogram = new ProIntHistogram(116);
+        public ProIntHistogram SwingHistogram = new ProIntHistogram(101);
+        public ProIntHistogram PreSwingHistogram = new ProIntHistogram(31);
+        public ProIntHistogram PostSwingHistogram = new ProIntHistogram(71);
+        public ProIntHistogram AimHistogram = new ProIntHistogram(16);
 
         public ProCutStats()
         {
@@ -181,6 +190,12 @@ namespace ProMod.Stats
             CutScoreSwing = new ProIntStat(this as ProCount);
             CutScorePreSwing = new ProIntStat(this as ProCount);
             CutScorePostSwing = new ProIntStat(this as ProCount);
+
+
+            PreSwingRating = new ProRealStat(this as ProCount);
+            PostSwingRating = new ProRealStat(this as ProCount);
+
+            TimeDependenceAngle = new ProRealStat(this as ProCount);
             TimeDependence = new ProRealStat(this as ProCount);
             TimeDeviation = new ProRealStat(this as ProCount);
             CutDirDeviation = new ProRealStat(this as ProCount);
@@ -197,12 +212,16 @@ namespace ProMod.Stats
         {
             Count++;
             CutScore.Add(goodCut.cutScoreBuffer.cutScore);
-            CutScoreHistogram.Increment(goodCut.cutScoreBuffer.cutScore);
             CutScoreAim.Add(goodCut.cutScoreBuffer.centerDistanceCutScore);
             CutScoreSwing.Add(goodCut.cutScoreBuffer.afterCutScore + goodCut.cutScoreBuffer.beforeCutScore);
             CutScorePreSwing.Add(goodCut.cutScoreBuffer.beforeCutScore);
             CutScorePostSwing.Add(goodCut.cutScoreBuffer.afterCutScore);
-            TimeDependence.Add(Mathf.Abs(Mathf.Asin(goodCut.cutScoreBuffer.noteCutInfo.cutNormal.z) / Mathf.PI * 180.0f));
+
+            PreSwingRating.Add(goodCut.cutScoreBuffer.beforeCutSwingRating);
+            PostSwingRating.Add(goodCut.cutScoreBuffer.afterCutSwingRating);
+
+            TimeDependenceAngle.Add(Mathf.Abs(Mathf.Asin(goodCut.cutScoreBuffer.noteCutInfo.cutNormal.z) / Mathf.PI * 180.0f));
+            TimeDependence.Add(goodCut.cutScoreBuffer.noteCutInfo.cutNormal.z * 100.0f);
             TimeDeviation.Add(goodCut.cutScoreBuffer.noteCutInfo.timeDeviation * 1000.0f);
             CutDirDeviation.Add(goodCut.cutScoreBuffer.noteCutInfo.cutDirDeviation);
             CutAngle.Add(goodCut.cutScoreBuffer.noteCutInfo.cutAngle);
@@ -211,7 +230,18 @@ namespace ProMod.Stats
 
             PreSwingDamage.Add((70 - goodCut.cutScoreBuffer.beforeCutScore) * goodCut.multiplier);
             PostSwingDamage.Add((30 - goodCut.cutScoreBuffer.afterCutScore) * goodCut.multiplier);
-            PostSwingDamage.Add((15 - goodCut.cutScoreBuffer.centerDistanceCutScore) * goodCut.multiplier);
+            AimDamage.Add((15 - goodCut.cutScoreBuffer.centerDistanceCutScore) * goodCut.multiplier);
+
+            
+
+            CutScoreHistogram.Increment(goodCut.cutScoreBuffer.cutScore);
+            SwingHistogram.Increment(goodCut.cutScoreBuffer.afterCutScore + goodCut.cutScoreBuffer.beforeCutScore);
+
+            PreSwingHistogram.Increment(goodCut.cutScoreBuffer.beforeCutScore);
+            PostSwingHistogram.Increment(goodCut.cutScoreBuffer.afterCutScore);
+            AimHistogram.Increment(goodCut.cutScoreBuffer.centerDistanceCutScore);
+
+
         }
     }
 
@@ -230,6 +260,10 @@ namespace ProMod.Stats
         public Dictionary<Tuple<SaberType,NoteLineLayer,int>, ProCutStats> CutStatsBySaberPos = new Dictionary<Tuple<SaberType, NoteLineLayer, int>, ProCutStats>();
         public Dictionary<Tuple<SaberType, NoteCutDirection>, ProCutStats> CutStatsBySaberDir = new Dictionary<Tuple<SaberType, NoteCutDirection>, ProCutStats>();
         public Dictionary<Tuple<SaberType, NoteLineLayer, int, NoteCutDirection>, ProCutStats> CutStatsBySaberPosDir = new Dictionary<Tuple<SaberType, NoteLineLayer, int, NoteCutDirection>, ProCutStats>();
+
+        public Dictionary<SaberType, int> MaxCurrentScoreBySaber = new Dictionary<SaberType, int>();
+        public Dictionary<SaberType, int> CurrentScoreBySaber = new Dictionary<SaberType, int>();
+        public Dictionary<SaberType, int> ComboDamageBySaber = new Dictionary<SaberType, int>();
 
         public int score;
         public int maxCurrentScore;
@@ -290,6 +324,10 @@ namespace ProMod.Stats
             }
             foreach (SaberType saberType in saberTypes)
             {
+                MaxCurrentScoreBySaber.Add(saberType, 0);
+                CurrentScoreBySaber.Add(saberType, 0);
+                ComboDamageBySaber.Add(saberType, 0);
+
                 CutStatsBySaber.Add(saberType, new ProCutStats());
                 foreach (NoteLineLayer noteLineLayer in noteLineLayers)
                 {

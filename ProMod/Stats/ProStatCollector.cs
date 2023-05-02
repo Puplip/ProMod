@@ -53,7 +53,34 @@ namespace ProMod.Stats
             _statData.score = _scoreController.multipliedScore;
             _statData.maxCurrentScore = _scoreController.immediateMaxPossibleMultipliedScore;
 
-            _statData.comboDamage += (scoringElement.maxMultiplier - scoringElement.multiplier) * scoringElement.maxPossibleCutScore;
+            _statData.comboDamage += (scoringElement.maxMultiplier - scoringElement.multiplier) * scoringElement.cutScore;
+
+            
+
+            if(scoringElement.noteData.colorType != ColorType.None)
+            {
+                SaberType scoringElementSaberType = scoringElement.noteData.colorType.ToSaberType();
+                _statData.MaxCurrentScoreBySaber[scoringElementSaberType] += scoringElement.maxMultiplier * scoringElement.maxPossibleCutScore;
+                _statData.CurrentScoreBySaber[scoringElementSaberType] += scoringElement.multiplier * scoringElement.cutScore;
+                _statData.ComboDamageBySaber[scoringElementSaberType] += (scoringElement.maxMultiplier - scoringElement.multiplier) * scoringElement.cutScore;
+
+            }
+
+
+            if (_statData.MaxCurrentScoreBySaber[SaberType.SaberA] + _statData.MaxCurrentScoreBySaber[SaberType.SaberB] != _statData.maxCurrentScore)
+            {
+                Plugin.Log.Error("Max Current Score not equal to individual saber max scores!");
+            }
+
+            if (_statData.CurrentScoreBySaber[SaberType.SaberA] + _statData.CurrentScoreBySaber[SaberType.SaberB] != _statData.score)
+            {
+                Plugin.Log.Error("Current Score not equal to individual saber scores!");
+            }
+
+            if (_statData.ComboDamageBySaber[SaberType.SaberA] + _statData.ComboDamageBySaber[SaberType.SaberB] != _statData.comboDamage)
+            {
+                Plugin.Log.Error("Combo Damage not equal to individual saber combo Damages!");
+            }
 
             if (scoringElement is GoodCutScoringElement)
             {

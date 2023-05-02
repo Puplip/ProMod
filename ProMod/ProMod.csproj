@@ -55,8 +55,23 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="CameraUtils">
+      <HintPath>$(BeatSaberDir)\Plugins\CameraUtils.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Colors">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Colors.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="GameplayCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="HMRendering">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -168,6 +183,7 @@
     <Compile Include="Patches\ProEffectsPatch.cs" />
     <Compile Include="Patches\ProHeightPatch.cs" />
     <Compile Include="Patches\ProHUDPatch.cs" />
+    <Compile Include="Patches\ProRTPatch.cs" />
     <Compile Include="ProHeight.cs" />
     <Compile Include="ProInstaller.cs" />
     <Compile Include="ProTab.cs" />
@@ -204,7 +220,6 @@
     <None Include="ProMod.csproj.user" Condition="Exists('ProMod.csproj.user')" />
     <EmbeddedResource Include="Resources\promod_assets" />
     <EmbeddedResource Include="Resources\TabUI.bsml" />
-    <EmbeddedResource Include="Resources\ProStat.bsml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">
