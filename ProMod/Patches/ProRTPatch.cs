@@ -20,7 +20,7 @@ namespace ProMod
             {
                 noteJumpValueType = BeatmapObjectSpawnMovementData.NoteJumpValueType.JumpDuration;
                 noteJumpValue = Plugin.Config.FixedRTValue / 1000.0f;
-                Plugin.Log.Info("Fixed RT: " + noteJumpValue + "ms");
+                Plugin.Log.Info("Using Fixed Reaction Time: " + noteJumpValue + "ms");
             } else if (Plugin.Config.RTCurveEnabled)
             {
                 Plugin.Log.Info("Map NJS: "+ startNoteJumpMovementSpeed);
@@ -47,13 +47,13 @@ namespace ProMod
                     noteJumpValueType = BeatmapObjectSpawnMovementData.NoteJumpValueType.JumpDuration;
                     float rtDiff = nextRTPoint.njs - prevRTPoint.njs;
                     noteJumpValue = (startNoteJumpMovementSpeed - prevRTPoint.njs) / (rtDiff) * (nextRTPoint.rt - prevRTPoint.rt) + prevRTPoint.rt;
-                    Plugin.Log.Info("Selected RT: " + noteJumpValue + "ms");
+                    Plugin.Log.Info("Using Linear Interpolated Reaction Time: " + noteJumpValue + "ms");
                     noteJumpValue /= 1000.0f;
                 } else
                 {
                     noteJumpValueType = BeatmapObjectSpawnMovementData.NoteJumpValueType.JumpDuration;
                     noteJumpValue = prevRTPoint.rt / 1000.0f;
-                    Plugin.Log.Info("Selected RT: " + prevRTPoint.rt + "ms");
+                    Plugin.Log.Info("Using Highest NJS Reaction Time: " + prevRTPoint.rt + "ms");
                 }
             }
             return true;
@@ -61,7 +61,7 @@ namespace ProMod
 
         public static void BeatmapObjectSpawnMovementData_Init_Postfix(float ____jumpDuration)
         {
-            Plugin.Log.Info("Final Reaction Time: " + (____jumpDuration * 500.0f) + "ms");
+            Plugin.Log.Info("Map Loading With Reaction Time: " + (____jumpDuration * 500.0f) + "ms");
         }
 
 

@@ -24,13 +24,11 @@ namespace ProMod
 		public static void SetActiveRecursive(GameObject gameObject, bool active)
 		{
 			gameObject.SetActive(active);
-			Plugin.Log.Info("Disabling Parent GameObject: " + GetGameObjectPath(gameObject));
 
 			foreach (Transform childTransform in gameObject.transform)
 			{
 				GameObject childGameObject = childTransform.gameObject;
 				childGameObject.SetActive(active);
-				Plugin.Log.Info("Disabling Child GameObject: " + GetGameObjectPath(childGameObject));
 				SetActiveRecursive(childGameObject, active);
 
 			}

@@ -47,7 +47,7 @@ namespace ProMod
             ProTab.Init();
 
             Stats.ProStat.Init();
-            zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();
+/*            zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();*/
             zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
             zenjector.Install<ProInstaller.ProGameplayCoreInstaller, GameplayCoreInstaller>();
 

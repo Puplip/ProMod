@@ -50,14 +50,13 @@ namespace ProMod
         private float _playerHeight;
         private void ProHeightPatch_heightValueChange(float height)
         {
-            Plugin.Log.Info("ProHeightPatch_heightValueChange");
             _playerHeight = height;
             if(_parserParams != null)
             {
                 _parserParams.EmitEvent("Event_PlayerHeight_Get");
             } else
             {
-                Plugin.Log.Info("_parserParams is null");
+                Plugin.Log.Error("BSMLParserParams are missing...");
             }
         }
 
@@ -78,7 +77,10 @@ namespace ProMod
             get => _playerHeight * 100.0f;
             set
             {
-                _playerDataModel.playerData.SetPlayerSpecificSettings(_playerDataModel.playerData.playerSpecificSettings.CopyWith(playerHeight: value / 100.0f));
+                if(_playerDataModel != null)
+                {
+                    _playerDataModel.playerData.SetPlayerSpecificSettings(_playerDataModel.playerData.playerSpecificSettings.CopyWith(playerHeight: value / 100.0f));
+                }
                 
                 if(_gameplaySetupViewController != null)
                 {

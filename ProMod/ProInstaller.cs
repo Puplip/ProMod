@@ -8,12 +8,12 @@ using UnityEngine;
 
 namespace ProMod.ProInstaller
 {
-    public class ProPCAppInit : Installer
+/*    public class ProPCAppInit : Installer
     {
         public override void InstallBindings()
         {
         }
-    }
+    }*/
 
 
     public class ProMainSettingsMenuViewControllersInstaller : Installer
