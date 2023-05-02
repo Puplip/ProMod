@@ -66,22 +66,6 @@ namespace ProMod.Stats
 
             }
 
-
-            if (_statData.MaxCurrentScoreBySaber[SaberType.SaberA] + _statData.MaxCurrentScoreBySaber[SaberType.SaberB] != _statData.maxCurrentScore)
-            {
-                Plugin.Log.Error("Max Current Score not equal to individual saber max scores!");
-            }
-
-            if (_statData.CurrentScoreBySaber[SaberType.SaberA] + _statData.CurrentScoreBySaber[SaberType.SaberB] != _statData.score)
-            {
-                Plugin.Log.Error("Current Score not equal to individual saber scores!");
-            }
-
-            if (_statData.ComboDamageBySaber[SaberType.SaberA] + _statData.ComboDamageBySaber[SaberType.SaberB] != _statData.comboDamage)
-            {
-                Plugin.Log.Error("Combo Damage not equal to individual saber combo Damages!");
-            }
-
             if (scoringElement is GoodCutScoringElement)
             {
                 GoodCutScoringElement goodCut = scoringElement as GoodCutScoringElement;

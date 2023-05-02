@@ -84,9 +84,6 @@ namespace ProMod
         [Inject]
         private IJumpOffsetYProvider _jumpOffsetYProvider;
 
-        [Inject]
-        private MainCamera mainCamera;
-
         private void Awake()
         {
             if (!Plugin.Config.HeightGuideEnabled)
@@ -102,13 +99,8 @@ namespace ProMod
             transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.HeightGuideLength);
             transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.HeightGuideOffset);
 
-/*            Invoke("DumpVisible", 30.0f);*/
         }
 
-/*        private void DumpVisible()
-        {
-            ProUtil.DumpAllGameObjectsWithComponent<Renderer>("LookingForClouds", mainCamera.camera.cullingMask);
-        }*/
 
     }
 }
