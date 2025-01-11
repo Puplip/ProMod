@@ -1,28 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Zenject;
-using System.Reflection;
 using HarmonyLib;
+using System.Reflection;
 
 namespace ProMod
 {
     public static class ProHUDPatch
     {
-        public static bool CoreGameHUDController_Initialize_Prefix(CoreGameHUDController __instance)
+
+        public static float hudWidth = 0;
+        public static float hudDistance = 0;
+        public static Vector3 energyPanelPos = Vector3.zero;
+
+        public static event Action HUDPositionReady;
+
+        public static void CoreGameHUDController_Initialize_Postfix(CoreGameHUDController __instance)
         {
-            __instance.gameObject.SetActive(!Plugin.Config.ProStatsEnabled);
-            return !Plugin.Config.ProStatsEnabled;
+            //ProUtil.SetActiveRecursive(__instance.gameObject, !Plugin.Config.proHUDConfig.proHUDEnabled);
+
+            if (!Plugin.Config.proHUDConfig.proHUDEnabled) { return; }
+
+
+            __instance.gameObject.SetActive(false);
+
+            energyPanelPos = __instance.energyPanelGo.transform.position;
+
+            hudWidth = Mathf.Abs(__instance.immediateRankGo.transform.position.x);
+            if(hudWidth < 2f)
+            {
+                hudWidth = 2f;
+            }
+
+
+            hudDistance = __instance.immediateRankGo.transform.position.z;
+
+            HUDPositionReady?.Invoke();
         }
 
         internal static void Init()
         {
             Plugin.harmony.Patch(
-                original: typeof(CoreGameHUDController).GetMethod(nameof(CoreGameHUDController.Initialize)),
-                prefix: new HarmonyMethod(typeof(ProHUDPatch).GetMethod(nameof(ProHUDPatch.CoreGameHUDController_Initialize_Prefix)))
+                original: typeof(CoreGameHUDController).GetMethod("Initialize",BindingFlags.Instance | BindingFlags.NonPublic),
+                postfix: new HarmonyMethod(typeof(ProHUDPatch).GetMethod(nameof(ProHUDPatch.CoreGameHUDController_Initialize_Postfix)))
             );
         }
 

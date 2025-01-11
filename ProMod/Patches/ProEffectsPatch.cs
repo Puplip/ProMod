@@ -16,35 +16,51 @@ namespace ProMod
     /// </summary>
     public static class ProEffectsPatch
     {
-        public static bool EffectDisabler_Prefix()
+        public static bool Debris_Prefix()
         {
-            return !Plugin.Config.GameplayEffectsDisabled;
+            return Plugin.Config.gameplayEffects.debris;
+        }
+        public static bool Particles_Prefix()
+        {
+            return Plugin.Config.gameplayEffects.particles;
+        }
+        public static bool Vibration_Prefix()
+        {
+            return Plugin.Config.gameplayEffects.vibration;
+        }
+        public static bool Shockwaves_Prefix()
+        {
+            return Plugin.Config.gameplayEffects.shockwaves;
+        }
+        public static bool Explosions_Prefix()
+        {
+            return Plugin.Config.gameplayEffects.bombExplosions;
         }
         internal static void Init()
         {
             Plugin.harmony.Patch(
-                original: typeof(HapticFeedbackController).GetMethod(nameof(HapticFeedbackController.PlayHapticFeedback)),
-                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.EffectDisabler_Prefix)))
+                original: typeof(HapticFeedbackManager).GetMethod(nameof(HapticFeedbackManager.PlayHapticFeedback)),
+                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.Vibration_Prefix)))
             );
 
             Plugin.harmony.Patch(
                 original: typeof(NoteCutParticlesEffect).GetMethod(nameof(NoteCutParticlesEffect.SpawnParticles)),
-                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.EffectDisabler_Prefix)))
+                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.Particles_Prefix)))
             );
 
             Plugin.harmony.Patch(
                 original: typeof(ShockwaveEffect).GetMethod(nameof(ShockwaveEffect.SpawnShockwave)),
-                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.EffectDisabler_Prefix)))
+                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.Shockwaves_Prefix)))
             );
 
             Plugin.harmony.Patch(
                 original: typeof(NoteDebrisSpawner).GetMethod(nameof(NoteDebrisSpawner.SpawnDebris)),
-                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.EffectDisabler_Prefix)))
+                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.Debris_Prefix)))
             );
 
             Plugin.harmony.Patch(
                 original: typeof(BombExplosionEffect).GetMethod(nameof(BombExplosionEffect.SpawnExplosion)),
-                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.EffectDisabler_Prefix)))
+                prefix: new HarmonyMethod(typeof(ProEffectsPatch).GetMethod(nameof(ProEffectsPatch.Explosions_Prefix)))
             );
         }
     }

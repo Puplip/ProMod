@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using Zenject;
 using HarmonyLib;
 using TMPro;
+using System.Reflection;
 
 namespace ProMod
 {
@@ -24,7 +25,7 @@ namespace ProMod
         internal static void Init()
         {
             Plugin.harmony.Patch(
-                original: typeof(PlayerHeightSettingsController).GetMethod(nameof(PlayerHeightSettingsController.RefreshUI)),
+                original: typeof(PlayerHeightSettingsController).GetMethod("RefreshUI",BindingFlags.Instance | BindingFlags.NonPublic),
                 prefix: new HarmonyMethod(typeof(ProHeightPatch).GetMethod(nameof(ProHeightPatch.PlayerHeightSettingsController_RefreshUI_Prefix)))
             );
         }

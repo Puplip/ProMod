@@ -13,7 +13,7 @@ using PluginMetadata = IPA.Loader.PluginMetadata;
 using IPA.Config.Stores;
 using SiraUtil.Zenject;
 using HarmonyLib;
-using ProMod.Config;
+using ProMod.Patches;
 
 namespace ProMod
 {
@@ -42,14 +42,15 @@ namespace ProMod
             ProHeightPatch.Init();
             ProHUDPatch.Init();
             ProCutScorePatch.Init();
-            ProRTPatch.Init();
+            ProJumpPatch.Init();
+            ProNotesPatch.Init();
+            ProSwingRatingPatch.Init();
 
-            ProTab.Init();
+            HUD.ProHUD.RegisterElements();
 
-            Stats.ProStat.Init();
-/*            zenjector.Install<ProInstaller.ProPCAppInit, PCAppInit>();*/
             zenjector.Install<ProInstaller.ProMainSettingsMenuViewControllersInstaller, MainSettingsMenuViewControllersInstaller>();
             zenjector.Install<ProInstaller.ProGameplayCoreInstaller, GameplayCoreInstaller>();
+
 
         }
 

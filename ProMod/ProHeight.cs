@@ -44,7 +44,7 @@ namespace ProMod
 
         private void Start()
         {
-            ProUtil.SetLayerRecursive(gameObject, VisibilityLayer.HmdOnlyAndReflected);
+            ProUtil.SetLayerRecursive(gameObject, VisibilityLayer.UI);
             _childrenActive = true;
             SetChildrenActiveState(false);
         }
@@ -63,7 +63,7 @@ namespace ProMod
         private void Update()
         {
 
-            SetChildrenActiveState(Plugin.Config.HeightGuideEnabled);
+            SetChildrenActiveState(Plugin.Config.heightGuideEnabled);
 
             if (_playerHeight != _playerDataModel.playerData.playerSpecificSettings.playerHeight) {
 
@@ -71,10 +71,11 @@ namespace ProMod
 
                 UpdateJumpOffsetY(PlayerHeightToJumpOffsetYProvider.JumpOffsetYForPlayerHeight(_playerHeight));
 
-                transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.HeightGuideLength);
-                transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.HeightGuideOffset);
+                transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.heightGuideLength);
+                transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.heightGuideOffset);
 
             }
+
         }
     }
 
@@ -86,7 +87,10 @@ namespace ProMod
 
         private void Awake()
         {
-            if (!Plugin.Config.HeightGuideEnabled)
+            Plugin.Log.Info("ProHeightGameplay Awake!");
+
+
+            if (!Plugin.Config.heightGuideEnabled)
             {
                 gameObject.SetActive(false);
                 return;
@@ -96,8 +100,8 @@ namespace ProMod
 
             UpdateJumpOffsetY(_jumpOffsetYProvider.jumpOffsetY);
 
-            transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.HeightGuideLength);
-            transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.HeightGuideOffset);
+            transform.localScale = new Vector3(1.0f, 1.0f, Plugin.Config.heightGuideLength);
+            transform.localPosition = new Vector3(0.0f, 0.0f, Plugin.Config.heightGuideOffset);
 
         }
 

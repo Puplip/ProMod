@@ -1,31 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Zenject;
+using Newtonsoft.Json;
 using UnityEngine;
-using Zenject;
-using System.Reflection;
-using HarmonyLib;
-using System.IO;
-
-/*using BeatSaberMarkupLanguage;*/
-using CameraUtils.Core;
 
 namespace ProMod
 {
-    public class ProGameplayCamera : IInitializable
+    public class ProGameplayCamera : MonoBehaviour
     {
         [Inject]
         private MainCamera _mainCamera;
-        public void Initialize()
+
+        private int _cameraMask;
+        private int _originalCameraMask;
+
+        private void Start()
         {
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Environment));
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.NeonLight));
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Default));
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Skybox));
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.NonReflectedParticles));
-            _mainCamera.camera.cullingMask &= ~(1 << ((int)VisibilityLayer.Water));
+            _cameraMask = Plugin.Config.hmdCameraMask;
+            _originalCameraMask = _mainCamera.camera.cullingMask;
+            _mainCamera.camera.cullingMask = _cameraMask;
         }
+        //float nextLogTime = 0;
+        //private void Update()
+        //{
+        //    if (Time.time >= nextLogTime)
+        //    {
+        //        nextLogTime = Time.time + 10.0f;
+        //        Plugin.Log.Info($"Default HMD Camera Mask: 0x{_mainCamera.camera.cullingMask:X8}");
+        //    }
+        //}
+
+        private void OnDisable()
+        {
+            _mainCamera.camera.cullingMask = _originalCameraMask;
+        }
+
     }
 }

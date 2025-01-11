@@ -1,14 +1,282 @@
-<settings-container child-control-width='true' child-expand-width='true'>
-    <toggle-setting text='Show Height Guide' value="UIValue_HeightGuideEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-    <slider-setting text='Player Height' value="UIValue_PlayerHeight" apply-on-change="true" bind-value="true"
-      increment="1" min="140" max="300" show-buttons="true" get-event="Event_PlayerHeight_Get" set-event="Event_PlayerHeight_Set"></slider-setting>
-  <toggle-setting text='Use Reaction Time Curve' value="UIValue_RTCurveEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-  <toggle-setting text='Use Fixed Reaction Time' value="UIValue_FixedRTEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-  <slider-setting text='Fixed Reaction Time' value="UIValue_FixedRTValue" apply-on-change="true" bind-value="true"
-    increment="10" min="100" max="1000" show-buttons="true"></slider-setting>
-    <toggle-setting text='Pro Stats' value="UIValue_ProStatsEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-    <toggle-setting text='Stat Colors' value="UIValue_StatColorsEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-    <toggle-setting text='Pro Cut Scores' value="UIValue_CutScoresEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
-    <toggle-setting text='Disable Gameplay Effects' value="UIValue_GameplayEffectsDisabled" apply-on-change="true" bind-value="true"></toggle-setting>
-  <toggle-setting text='Hide Environment in HMD' value="UIValue_DisableEnvironmentInHMD" apply-on-change="true" bind-value="true"></toggle-setting>
-</settings-container>
+<vertical child-control-height='false' child-expand-height='false'>
+
+	<horizontal>
+
+		<button text="&lt;" tags="Tag_SettingLeftButton"/>
+		<tab-selector tab-tag='Tag_SettingTab' select-cell='UIAction_SelectTab' left-button-tag="Tag_SettingLeftButton" right-button-tag="Tag_SettingRightButton" page-count="4"/>
+		<button text="&gt;" tags="Tag_SettingRightButton"/>
+	</horizontal>
+
+
+	<tab tags='Tag_SettingTab' tab-name='Height'>
+		<macro.as-host host='UIValue_ProHeightTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<toggle-setting text='Show Height Guide' value="UIValue_HeightGuideEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<slider-setting text='Player Height' value="UIValue_PlayerHeight" formatter="UIAction_FormatPlayerHeight" apply-on-change="true" bind-value="true" increment="1" min="140" max="300" show-buttons="true"></slider-setting>
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='Jump'>
+		<macro.as-host host='UIValue_ProJumpTabUI'>
+
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+
+				<list-setting text="Jump Mode" value="UIValue_JumpSetting" choices="UIValue_JumpSettingOptions" formatter="UIAction_FormatJumpSettingOption" bind-value="true" apply-on-change="true"/>
+
+				<slider-setting active="~UIValue_EditReactionTime" formatter='UIAction_FormatReactionTime' text='Reaction Time' value="UIValue_ReactionTime" apply-on-change="true" bind-value="true" increment="5" min="250" max="1000" show-buttons="true"></slider-setting>
+				<slider-setting active="~UIValue_EditJumpDistance" formatter='UIAction_FormatJumpDistance' text='Jump Distance' value="UIValue_JumpDistance" apply-on-change="true" bind-value="true" increment="0.25" min="5" max="30" show-buttons="true"></slider-setting>
+
+				<horizontal pref-width="90">
+
+					<vertical pref-width="50">
+						<text active="~UIValue_ViewReactionTime" text="Reaction Time" align="Left"/>
+						<text active="~UIValue_ViewJumpDistance" text="Jump Distance" align="Left"/>
+						<text active="~UIValue_HideFractions" text=" " align="Left"/>
+					</vertical>
+
+					<vertical pref-width="40">
+						<text active="~UIValue_ViewReactionTime" text="~UIValue_CalcReactionTime" align="Right"/>
+						<text active="~UIValue_ViewJumpDistance" text="~UIValue_CalcJumpDistance" align="Right"/>
+						<text active="~UIValue_HideFractions" text=" " align="Right"/>
+					</vertical>
+
+				</horizontal>
+
+				<horizontal active='~UIValue_ShowFractions'>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="2/1" on-click="UIAction_SelectBeat_21"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="7/4" on-click="UIAction_SelectBeat_74"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="5/3" on-click="UIAction_SelectBeat_53"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="3/2" on-click="UIAction_SelectBeat_32"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="4/3" on-click="UIAction_SelectBeat_43"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="5/4" on-click="UIAction_SelectBeat_54"></clickable-text>
+					</vertical>
+				</horizontal>
+					
+				<horizontal active='~UIValue_ShowFractions' pad-top="2">
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="1/1" on-click="UIAction_SelectBeat_11"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="3/4" on-click="UIAction_SelectBeat_34"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="2/3" on-click="UIAction_SelectBeat_23"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="1/2" on-click="UIAction_SelectBeat_12"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="1/3" on-click="UIAction_SelectBeat_13"></clickable-text>
+					</vertical>
+					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
+						<clickable-text align="Center" text="1/4" on-click="UIAction_SelectBeat_14"></clickable-text>
+					</vertical>
+				</horizontal>
+
+
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='Effects'>
+		<macro.as-host host='UIValue_ProDisplayTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<toggle-setting text='Debris Enabled' value="UIValue_DebrisEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<toggle-setting text='Particles Enabled' value="UIValue_ParticlesEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<toggle-setting text='Vibration Enabled' value="UIValue_VibrationEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<toggle-setting text='Shockwaves Enabled' value="UIValue_ShockwavesEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<toggle-setting text='Bomb Explosions Enabled' value="UIValue_BombExplosionsEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='Gameplay'>
+		<macro.as-host host='UIValue_ProGameplayTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<tab-selector tab-tag='Tag_GameplayTab'/>
+
+				<tab tags='Tag_GameplayTab' tab-name='Bombs'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text='Custom Bomb Color' value="UIValue_BombColorEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+						<color-setting active="~UIValue_BombColorEnabled" text='Color' value="UIValue_BombColor" apply-on-change="true" bind-value="true"></color-setting>
+						<slider-setting active="~UIValue_BombColorEnabled" text='Multiplier' value="UIValue_BombColorMultiplier" apply-on-change="true" bind-value="true" increment="0.1" min="0" max="50" show-buttons="true"></slider-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_GameplayTab' tab-name='Notes'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<text text="Future Scope Creep Placeholder :D"/>
+					</vertical>
+				</tab>
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='Cut Scores'>
+		<macro.as-host host='UIValue_ProCutScoresTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<toggle-setting text='Pro Cut Scores' value="UIValue_CutScoresEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+				<increment-setting text='v3 Note Score Size' value="UIValue_AbnormalScoreSize" apply-on-change="true" bind-value="true" increment="25" min="0" max="300" integer-only="true"></increment-setting>
+				<slider-setting text='Score' value="UIValue_PointScore" apply-on-change="true" bind-value="true" increment="1" min="0" max="115" integer-only="true" show-buttons="true"></slider-setting>
+
+				<horizontal>
+					<button interactable="~UIValue_PrevCutScorePointExists" on-click="UIAction_PrevCutScorePoint" text="Prev"></button>
+					<button active="~UIValue_CutScorePointExists" on-click="UIAction_RemoveCutScorePoint" text="Remove Point"></button>
+					<button active="~UIValue_CutScorePointNotExists" on-click="UIAction_NewCutScorePoint" text="Create Point"></button>
+					<button interactable="~UIValue_NextCutScorePointExists" on-click="UIAction_NextCutScorePoint" text="Next"></button>
+				</horizontal>
+
+				<color-setting     active="~UIValue_CutScorePointExists" text='Color' value="UIValue_PointColor" apply-on-change="true" bind-value="true"></color-setting>
+				<increment-setting active="~UIValue_CutScorePointExists" text='Size' value="UIValue_PointScoreSize" apply-on-change="true" bind-value="true" increment="25" min="0" max="300" integer-only="true"></increment-setting>
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='HUD'>
+		<macro.as-host host='UIValue_ProHUDTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<tab-selector tab-tag='Tag_HUDTab'/>
+
+				<tab tags='Tag_HUDTab' tab-name='Main'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text='Pro HUD Enabled' value="UIValue_ProHUDEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text='Show Cut Stats' value="UIValue_ShowCutStats" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text='Show Score Density' value="UIValue_ShowScoreDensity" apply-on-change="true" bind-value="true"></toggle-setting>
+						<list-setting text="Accuracy/Combo Position" value="UIValue_LeftRightElement" choices="UIValue_LeftRightElementChoices" formatter="UIValue_LeftRightElementFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Cut Stats/Score Density Position" value="UIValue_TopBottomElement" choices="UIValue_TopBottomElementChoices" formatter="UIValue_TopBottomElementFormatter" bind-value="true" apply-on-change="true"/>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_HUDTab' tab-name='Acc'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<list-setting text="Acc Style" value="UIValue_AccStyle" choices="UIValue_AccStyleChoices" formatter="UIAction_AccStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Full Combo Acc Style" value="UIValue_FullComboAccStyle" choices="UIValue_FullComboAccStyleChoices" formatter="UIAction_FullComboAccStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<toggle-setting text='Show LR Acc' value="UIValue_ShowLeftRightAcc" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_HUDTab' tab-name='Acc Colors'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting  text='Acc Colors' value="UIValue_AccColorsEnabled" apply-on-change="true" bind-value="true"></toggle-setting>
+
+						<slider-setting text='Score' value="UIValue_AccColorPointAcc" apply-on-change="true" bind-value="true" increment="1" min="0" max="100" integer-only="true" show-buttons="true"></slider-setting>
+
+						<horizontal>
+							<button interactable="~UIValue_PrevAccColorPointExists" on-click="UIAction_PrevAccColorPoint" text="Prev"></button>
+							<button active="~UIValue_AccColorPointExists" on-click="UIAction_RemoveAccColorPoint" text="Remove Point"></button>
+							<button active="~UIValue_AccColorPointNotExists" on-click="UIAction_NewAccColorPoint" text="Create Point"></button>
+							<button interactable="~UIValue_NextAccColorPointExists" on-click="UIAction_NextAccColorPoint" text="Next"></button>
+						</horizontal>
+
+						<color-setting     active="~UIValue_AccColorPointExists" text='Color' value="UIValue_AccColorPointColor" apply-on-change="true" bind-value="true"></color-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_HUDTab' tab-name='Cut'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<list-setting text="Center Style" value="UIValue_CenterStyle" choices="UIValue_CenterStyleChoices" formatter="UIValue_CenterStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Time Dependence Style" value="UIValue_TimeDependenceStyle" choices="UIValue_TimeDependenceStyleChoices" formatter="UIAction_TimeDependenceStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Center Distance Style" value="UIValue_CenterDistanceStyle" choices="UIValue_CenterDistanceStyleChoices" formatter="UIAction_CenterDistanceStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Swing Style" value="UIValue_SwingStyle" choices="UIValue_SwingStyleChoices" formatter="UIAction_SwingStyleFormatter" bind-value="true" apply-on-change="true"/>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_HUDTab' tab-name='Misc.'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<list-setting text="Combo Style" value="UIValue_ComboStyle" choices="UIValue_ComboStyleChoices" formatter="UIAction_ComboStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Error Style" value="UIValue_ErrorStyle" choices="UIValue_ErrorStyleChoices" formatter="UIAction_ErrorStyleFormatter" bind-value="true" apply-on-change="true"/>
+						<list-setting text="Song Progress Style" value="UIValue_ProgressStyle" choices="UIValue_ProgressStyleChoices" formatter="UIAction_ProgressStyleFormatter" bind-value="true" apply-on-change="true"/>
+
+						<color-setting text='Health Bar Full Color' value="UIValue_HealthBarFullColor" apply-on-change="true" bind-value="true"></color-setting>
+						<color-setting text='Health Bar Fail Color' value="UIValue_HealthBarFailColor" apply-on-change="true" bind-value="true"></color-setting>
+
+					</vertical>
+				</tab>
+
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+	<tab tags='Tag_SettingTab' tab-name='HMD Layers'>
+		<macro.as-host host='UIValue_ProDisplayTabUI'>
+			<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+				<tab-selector tab-tag='Tag_LayerTab'/>
+
+				<tab tags='Tag_LayerTab' tab-name='Main'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="UI" value="UIValue_HMDLayerUI" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Note" value="UIValue_HMDLayerNote" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Saber" value="UIValue_HMDLayerSaber" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Obstacle" value="UIValue_HMDLayerObstacle" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="PlayersPlace" value="UIValue_HMDLayerPlayersPlace" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_LayerTab' tab-name='Device'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="DesktopOnly" value="UIValue_HMDLayerDesktopOnly" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="DesktopOnlyAndReflected" value="UIValue_HMDLayerDesktopOnlyAndReflected" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="HmdOnly" value="UIValue_HMDLayerHmdOnly" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="HmdOnlyAndReflected" value="UIValue_HMDLayerHmdOnlyAndReflected" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="AlwaysVisible" value="UIValue_HMDLayerAlwaysVisible" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="AlwaysVisibleAndReflected" value="UIValue_HMDLayerAlwaysVisibleAndReflected" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_LayerTab' tab-name='Env'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="TransparentFX" value="UIValue_HMDLayerTransparentFX" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="IgnoreRaycast" value="UIValue_HMDLayerIgnoreRaycast" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Water" value="UIValue_HMDLayerWater" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Skybox" value="UIValue_HMDLayerSkybox" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Environment" value="UIValue_HMDLayerEnvironment" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="EnvironmentPhysics" value="UIValue_HMDLayerEnvironmentPhysics" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_LayerTab' tab-name='FX'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="NoteDebris" value="UIValue_HMDLayerNoteDebris" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="NonReflectedParticles" value="UIValue_HMDLayerNonReflectedParticles" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="CutEffectParticles" value="UIValue_HMDLayerCutEffectParticles" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="NeonLight" value="UIValue_HMDLayerNeonLight" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_LayerTab' tab-name='Misc'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="Default" value="UIValue_HMDLayerDefault" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Avatar" value="UIValue_HMDLayerAvatar" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="FixMRAlpha" value="UIValue_HMDLayerFixMRAlpha" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="GrabPassTexture1" value="UIValue_HMDLayerGrabPassTexture1" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="DontShowInExternalMRCamera" value="UIValue_HMDLayerDontShowInExternalMRCamera" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+
+				<tab tags='Tag_LayerTab' tab-name='Off'>
+					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
+						<toggle-setting text="ThirdPerson" value="UIValue_HMDLayerThirdPerson" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="FirstPerson" value="UIValue_HMDLayerFirstPerson" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Layer7" value="UIValue_HMDLayerLayer7" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Event" value="UIValue_HMDLayerEvent" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="MRForegroundClipPlane" value="UIValue_HMDLayerMRForegroundClipPlane" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="Reserved" value="UIValue_HMDLayerReserved" apply-on-change="true" bind-value="true"></toggle-setting>
+					</vertical>
+				</tab>
+			</vertical>
+		</macro.as-host>
+	</tab>
+
+</vertical>

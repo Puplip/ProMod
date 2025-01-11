@@ -18,6 +18,13 @@ namespace ProMod
         public static void Init() {
             if (_init) return;
 
+            var q = typeof(ProAssets).Assembly.GetManifestResourceStream("ProMod.Resources.promod_assets");
+
+            if(q == null)
+            {
+                ProMod.Plugin.Log.Error("typeof(ProAssets).Assembly.GetManifestResourceStream(\"ProMod.Resources.promod_assets\") = null!");
+            }
+
             assetBundle = AssetBundle.LoadFromStream(typeof(ProAssets).Assembly.GetManifestResourceStream("ProMod.Resources.promod_assets"));
 
             HeightGuide = assetBundle.LoadAsset<GameObject>("HeightGuide");

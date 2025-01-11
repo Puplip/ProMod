@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProMod</RootNamespace>
     <AssemblyName>ProMod</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
@@ -20,17 +20,20 @@
     <!--<PathMap>$(AppOutputBase)=X:\$(AssemblyName)\</PathMap>-->
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
     <DisableCopyToPlugins>True</DisableCopyToPlugins>
@@ -50,6 +53,31 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="BeatSaber.Settings, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.Settings.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BeatSaber.Styles, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.Styles.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BeatSaber.TrackDefinitions, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.TrackDefinitions.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BeatSaber.ViewSystem, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BeatSaber.ViewSystem.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BGLib.UnityExtension, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\BGLib.UnityExtension.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BSML">
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
       <Private>False</Private>
@@ -65,14 +93,24 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Core">
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Core.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DataModels, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="GameplayCore">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="HMRendering">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
+    <Reference Include="HMUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="IPA.Injector">
@@ -83,6 +121,11 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="SegmentedControl, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\SegmentedControl.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SiraUtil">
@@ -102,10 +145,6 @@
     </Reference>
     <Reference Include="HMLib">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="HMUI">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IPA.Loader">
@@ -179,14 +218,42 @@
   <ItemGroup>
     <Compile Include="Config\ProDefaults.cs" />
     <Compile Include="Config\ProConfigTypes.cs" />
+    <Compile Include="HUD\Elements\ProHUDAccElements.cs" />
+    <Compile Include="HUD\Elements\ProHUDScoreDensity.cs" />
+    <Compile Include="HUD\ProHudCompoundElement.cs" />
+    <Compile Include="HUD\Elements\ProHUDCutStatsElement.cs" />
+    <Compile Include="HUD\Elements\ProHUDMainElements.cs" />
+    <Compile Include="HUD\ProHUDElementTypes.cs" />
+    <Compile Include="HUD\Elements\ProHUDHealthBar.cs" />
+    <Compile Include="HUD\Elements\ProHUDComboElements.cs" />
+    <Compile Include="Deprecated\ProHUDCutElements.cs" />
+    <Compile Include="HUD\Elements\ProHUDUtilElements.cs" />
     <Compile Include="Patches\ProCutScorePatch.cs" />
     <Compile Include="Patches\ProEffectsPatch.cs" />
     <Compile Include="Patches\ProHeightPatch.cs" />
     <Compile Include="Patches\ProHUDPatch.cs" />
-    <Compile Include="Patches\ProRTPatch.cs" />
+    <Compile Include="Patches\ProNotesPatch.cs" />
+    <Compile Include="Patches\ProJumpPatch.cs" />
+    <Compile Include="Patches\ProSwingRatingPatch.cs" />
+    <Compile Include="ProExtensions.cs" />
     <Compile Include="ProHeight.cs" />
     <Compile Include="ProInstaller.cs" />
-    <Compile Include="ProTab.cs" />
+    <Compile Include="HUD\Elements\ProHUDProgressElements.cs" />
+    <Compile Include="HUD\ProHUD.cs" />
+    <Compile Include="HUD\ProHUDElementController.cs" />
+    <Compile Include="Stats\ProStats.cs" />
+    <Compile Include="Stats\ProStatDataTypes.cs" />
+    <Compile Include="Stats\ProStatTreeTypes.cs" />
+    <Compile Include="Stats\ProStatInterfaces.cs" />
+    <Compile Include="Stats\ProStatNode.cs" />
+    <Compile Include="HUD\ProHUDUtil.cs" />
+    <Compile Include="UI\ProCutScoresTabUI.cs" />
+    <Compile Include="UI\ProDisplayTabUI.cs" />
+    <Compile Include="UI\ProGameplayTabUI.cs" />
+    <Compile Include="UI\ProHeightTabUI.cs" />
+    <Compile Include="UI\ProJumpTabUI.cs" />
+    <Compile Include="UI\ProHUDTabUI.cs" />
+    <Compile Include="UI\ProTabUI.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="ProAssets.cs" />
     <Compile Include="Config\ProConfig.cs" />
@@ -198,12 +265,12 @@
     </Compile>
     <Compile Include="ProGraphics.cs" />
     <Compile Include="ProUtil.cs" />
-    <Compile Include="Stats\ProStat.cs" />
-    <Compile Include="Stats\ProStatCounters.cs" />
-    <Compile Include="Stats\ProStatData.cs" />
-    <Compile Include="Stats\ProStatCollector.cs" />
-    <Compile Include="Stats\ProStatController.cs" />
-    <Compile Include="Stats\ProStatsLocations.cs" />
+    <Compile Include="Deprecated\ProStatOld.cs" />
+    <Compile Include="Deprecated\ProStatCountersOld.cs" />
+    <Compile Include="Deprecated\ProStatDataOld.cs" />
+    <Compile Include="Deprecated\ProStatCollectorOld.cs" />
+    <Compile Include="HUD\ProHUDController.cs" />
+    <Compile Include="UI\ProUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -227,6 +294,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

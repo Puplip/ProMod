@@ -9,155 +9,210 @@ using Newtonsoft.Json.Serialization;
 using System.IO;
 using IPA.Utilities;
 
-namespace ProMod.Config
+namespace ProMod;
+
+public class ProConfig
 {
-    public class ProConfig
+
+    [JsonProperty("HeightGuideEnabled")]
+    public bool heightGuideEnabled = false;
+
+    [JsonProperty("HeightGuideOffset")]
+    public float heightGuideOffset = 0.75f;
+
+    [JsonProperty("HeightGuideLength")]
+    public float heightGuideLength = 1.0f;
+
+    [JsonProperty("JumpSetting"), JsonConverter(typeof(StringEnumConverter))]
+    public ProJumpSetting jumpSetting = ProJumpSetting.HouseSpecial;
+
+    [JsonProperty("JumpDistance")]
+    public float jumpDistance = 17.0f;
+    [JsonProperty("MinJumpDistance")]
+    public float minJumpDistance = 10.0f;
+    [JsonProperty("MaxJumpDistance")]
+    public float maxJumpDistance = 10.0f;
+
+    [JsonProperty("ReactionTime")]
+    public float reactionTime = 400f;
+    [JsonProperty("MinReactionTime")]
+    public float minReactionTime = 350f;
+    [JsonProperty("MaxReactionTime")]
+    public float maxReactionTime = 750f;
+
+    [JsonProperty("BombColorEnabled")]
+    public bool bombColorEnabled = false;
+
+    [JsonProperty("BombColor")]
+    public ProColorSerializable bombColor = Color.white;
+
+    [JsonProperty("BombColorMultiplier")]
+    public float bombColorMultiplier = 10f;
+
+    //[JsonConverter(typeof(StringEnumConverter)),JsonProperty("JDRTOverrideMode")]
+    //public ProJDRTOverrideMode jdrtOverrideMode = ProJDRTOverrideMode.None;
+
+
+
+    [JsonProperty("ProHUD")]
+    public ProHUDConfig proHUDConfig = new ProHUDConfig();
+
+    [JsonProperty("CutScores")]
+    public ProCutScoreConfig cutScores = new ProCutScoreConfig();
+
+    [JsonProperty("GameplayEffects")]
+    public ProGameplayEffectConfig gameplayEffects = new ProGameplayEffectConfig();
+
+    [JsonProperty("HMDCameraMask")]
+    public ProCameraMaskConfig hmdCameraMask = new ProCameraMaskConfig();
+
+    [JsonIgnore]
+    private static string filePath { get => Path.Combine(UnityGame.UserDataPath, "ProMod.json"); }
+
+    public static void Load()
     {
-        public bool HeightGuideEnabled  = true;
-        public float HeightGuideOffset = 0.75f;
-        public float HeightGuideLength  = 1.0f;
-        public bool CutScoresEnabled = true;
-        public bool RTCurveEnabled = true;
-        public bool FixedRTEnabled = false;
-        public float FixedRTValue = 420.0f;
-        public bool ProStatsEnabled = true;
-        public bool StatColorsEnabled = true;
-        public bool GameplayEffectsDisabled = true;
-        public bool DisableEnvironmentInHMD = true;
-
-        public List<ProCutScoreConfig> CutScores;
-        public List<ProReactionTimePoint> RTCurve;
-        public List<ProAccColorConfig> AccColors;
-        public List<ProStatConfig> ProStats;
-
-        [JsonIgnore]
-        private static string filePath { get => Path.Combine(UnityGame.UserDataPath, "ProMod.json"); }
-
-        public static void Load()
+        if (!File.Exists(filePath))
         {
-            if (!File.Exists(filePath) || true)
+            Plugin.Log.Info("Creating New ProMod Config...");
+            Plugin.Config = new ProConfig();
+        }
+        else
+        {
+            Plugin.Log.Info("Loading ProMod Config...");
+            try
             {
+                Plugin.Config = JsonConvert.DeserializeObject<ProConfig>(File.ReadAllText(filePath));
+            }catch (Exception ex)
+            {
+                Plugin.Log.Error("Failed to Load Config!");
+                Plugin.Log.Error(ex);
+                string errorConfigPath = Path.Combine(UnityGame.UserDataPath, "ProMod_ERROR.json");
+                File.WriteAllText(errorConfigPath, File.ReadAllText(filePath));
+                Plugin.Log.Error($"Broken Config Moved to: {errorConfigPath}");
+
                 Plugin.Log.Info("Creating New ProMod Config...");
                 Plugin.Config = new ProConfig();
             }
+        }
+        Plugin.Config.Validate();
+        Plugin.Config.Save();
+    }
+
+    public void Save()
+    {
+        File.WriteAllText(filePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+    }
+
+    public void Validate()
+    {
+        if(bombColor == null)
+        {
+            bombColor = Color.white;
+        }
+        bombColorMultiplier = Mathf.Clamp(bombColorMultiplier, 0f, 50f);
+
+        if (cutScores == null)
+        {
+            cutScores = new ProCutScoreConfig();
+        }
+        if (cutScores.cutScorePoints == null)
+        {
+            cutScores.cutScorePoints = ProDefaults.CutScores();
+        }
+
+        if (proHUDConfig == null)
+        {
+            proHUDConfig = new ProHUDConfig();
+        }
+        if (proHUDConfig.accColorPoints == null)
+        {
+            proHUDConfig.accColorPoints = ProDefaults.AccColors();
+        }
+        if (proHUDConfig.healthBarFullColor == null)
+        {
+            proHUDConfig.healthBarFullColor = Color.green;
+        }
+        if (proHUDConfig.healthBarFailColor == null)
+        {
+            proHUDConfig.healthBarFailColor = Color.red;
+        }
+
+        if (gameplayEffects == null)
+        {
+            gameplayEffects = new ProGameplayEffectConfig();
+        }
+
+        if (hmdCameraMask == null)
+        {
+            hmdCameraMask = new ProCameraMaskConfig();
+        }
+
+        cutScores.cutScorePoints.RemoveAll((x) => x == null || x.color == null);
+
+        proHUDConfig.accColorPoints.RemoveAll((x) => x == null || x.color == null);
+
+        HashSet<int> cutScoreSet = new HashSet<int>();
+
+        for (int i = 0; i < cutScores.cutScorePoints.Count; i++)
+        {
+            if (cutScoreSet.Contains(cutScores.cutScorePoints[i].score))
+            {
+                Plugin.Log.Info("Removing Duplicate CutScore Config: " + cutScores.cutScorePoints[i].score);
+                cutScores.cutScorePoints.RemoveAt(i);
+                i--;
+            }
+            else if (cutScores.cutScorePoints[i].score < 0 || cutScores.cutScorePoints[i].score > 115)
+            {
+                Plugin.Log.Info("Removing Invalid CutScore Config: " + cutScores.cutScorePoints[i].score);
+                cutScores.cutScorePoints.RemoveAt(i);
+                i--;
+            }
             else
             {
-                Plugin.Log.Info("Loading ProMod Config...");
-                Plugin.Config = JsonConvert.DeserializeObject<ProConfig>(File.ReadAllText(filePath));
+                cutScoreSet.Add(cutScores.cutScorePoints[i].score);
             }
-            Plugin.Config.Validate();
-            Plugin.Config.Save();
         }
 
-        public void Save()
+        if (!cutScoreSet.Contains(0))
         {
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+            cutScores.cutScorePoints.Add(new ProCutScorePointConfig { 
+                displayStyle = ProCutScorePointConfig.DisplayStyle.CutScore,
+                score = 0,
+                size = 100,
+                color = Color.white
+            });
         }
+        cutScores.cutScorePoints.Sort();
 
-        public void Validate()
+        HashSet<int> accSet = new HashSet<int>();
+
+        for (int i = 0; i < proHUDConfig.accColorPoints.Count; i++)
         {
-            if(CutScores == null)
+            if (accSet.Contains(proHUDConfig.accColorPoints[i].accuracy))
             {
-                CutScores = ProDefaults.CutScores();
+                Plugin.Log.Info("Removing Duplicate AccColor Config: " + proHUDConfig.accColorPoints[i].accuracy);
+                proHUDConfig.accColorPoints.RemoveAt(i);
+                i--;
+                continue;
             }
-            if(RTCurve == null)
+            
+            if (proHUDConfig.accColorPoints[i].accuracy > 100 || proHUDConfig.accColorPoints[i].accuracy < 0)
             {
-                RTCurve = ProDefaults.RTCurve();
-            }
-            if (AccColors == null)
-            {
-                AccColors = ProDefaults.AccColors();
-            }
-            if (ProStats == null)
-            {
-                ProStats = ProDefaults.ProStats();
-            }
-
-            ProStats.RemoveAll((x) => x == null || x.name == null || x.customLocation == null);
-
-            RTCurve.RemoveAll((x) => x == null);
-
-            CutScores.RemoveAll((x) => x == null);
-
-            AccColors.RemoveAll((x) => x == null);
-
-            HashSet<int> cutScoreSet = new HashSet<int>();
-
-            for (int i = 0; i < CutScores.Count; i++)
-            {
-                if (cutScoreSet.Contains(CutScores[i].score))
-                {
-                    Plugin.Log.Info("Removing Duplicate CutScore Config: " + CutScores[i].score);
-                    CutScores.RemoveAt(i);
-                    i--;
-                }
-                else if (CutScores[i].score < 0 || CutScores[i].score > 115)
-                {
-                    Plugin.Log.Info("Removing Invalid CutScore Config: " + CutScores[i].score);
-                    CutScores.RemoveAt(i);
-                    i--;
-                }
-                else
-                {
-                    cutScoreSet.Add(CutScores[i].score);
-                }
+                Plugin.Log.Info("Removing Invalid AccColor Config: " + proHUDConfig.accColorPoints[i].accuracy);
+                proHUDConfig.accColorPoints.RemoveAt(i);
+                i--;
+                continue;
             }
 
-            CutScores.Sort();
-
-            HashSet<int> accSet = new HashSet<int>();
-
-            for (int i = 0; i < AccColors.Count; i++)
-            {
-                if (accSet.Contains(AccColors[i].score))
-                {
-                    Plugin.Log.Info("Removing Duplicate AccColor Config: " + AccColors[i].score);
-                    AccColors.RemoveAt(i);
-                    i--;
-                }
-                else if (AccColors[i].score > 100 || AccColors[i].score < 0)
-                {
-                    Plugin.Log.Info("Removing Invalid AccColor Config: " + AccColors[i].score);
-                    AccColors.RemoveAt(i);
-                    i--;
-                }
-                else
-                {
-                    accSet.Add(AccColors[i].score);
-                }
-            }
-
-            AccColors.Sort();
-
-            HashSet<float> njsSet = new HashSet<float>();
-
-            for (int i = 0; i < RTCurve.Count; i++)
-            {
-                if (RTCurve[i].rt < 100.0f || RTCurve[i].njs < 0.0f)
-                {
-                    Plugin.Log.Info("Removing Invalid JumpDistance Config: " + RTCurve[i].njs + "njs");
-                    RTCurve.RemoveAt(i);
-                    i--;
-                }
-                else if (njsSet.Contains(RTCurve[i].njs))
-                {
-                    Plugin.Log.Info("Removing Duplicate JumpDistance Config: " + RTCurve[i].njs + "njs");
-                    RTCurve.RemoveAt(i);
-                    i--;
-                }
-                else
-                {
-                    njsSet.Add(AccColors[i].score);
-                }
-            }
-
-            RTCurve.Sort();
-
-            if(RTCurve.Count < 2)
-            {
-                RTCurve = ProDefaults.RTCurve();
-            }
+            accSet.Add(proHUDConfig.accColorPoints[i].accuracy);
         }
+
+        if (!accSet.Contains(0))
+        {
+            proHUDConfig.accColorPoints.Add(new ProAccColorPointConfig(0, Color.white));
+        }
+
+        proHUDConfig.accColorPoints.Sort();
 
     }
 }
