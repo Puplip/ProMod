@@ -68,13 +68,15 @@ public static class ProJumpPatch
         float beatFraction = float.NaN;
         float error = 0.010f;
 
-        while ((!float.IsFinite(beatFraction) || beatFraction <= 0) && error <= 0.050f)
+        while ((!float.IsFinite(beatFraction) || beatFraction <= 0) && error <= 0.045f)
         {
             beatFraction = fractions.FirstOrDefault(e => Mathf.Abs(e * beatDuration - targetReactionTime) <= error);
-            if (!float.IsFinite(beatFraction) || beatFraction <= 0)
-            {
-                beatFraction = worseFractions.FirstOrDefault(e => Mathf.Abs(e * beatDuration - targetReactionTime) <= error);
-            }
+            error += 0.010f;
+        }
+        error = 0.010f;
+        while ((!float.IsFinite(beatFraction) || beatFraction <= 0) && error <= 0.045f)
+        {
+            beatFraction = worseFractions.FirstOrDefault(e => Mathf.Abs(e * beatDuration - targetReactionTime) <= error);
             error += 0.010f;
         }
 
