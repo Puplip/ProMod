@@ -43,7 +43,7 @@
 
 				</horizontal>
 
-				<horizontal active='~UIValue_ShowFractions'>
+				<horizontal active='~UIValue_ShowFractions' pad-top="1">
 					<vertical bg="round-rect-panel" pad-left="4" pad-right="4" pad-top="1">
 						<clickable-text align="Center" text="2/1" on-click="UIAction_SelectBeat_21"></clickable-text>
 					</vertical>
