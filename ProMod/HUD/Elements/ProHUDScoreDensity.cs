@@ -387,7 +387,7 @@ namespace ProMod.HUD.Elements
                 }
             }
 
-            int burstSliderElementScore = ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.BurstSliderElement).maxCutScore;
+            int burstSliderElementScore = ScoreModel.GetNoteScoreDefinition(NoteData.ScoringType.ChainLink).maxCutScore;
 
             foreach(SliderData sliderData in sliderDataList)
             {

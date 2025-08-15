@@ -28,15 +28,16 @@ public static class ProJumpPatch
         .Concat(Enumerable.Range(1, 8).Select(i => (float)i - 5f / 8f))
         .Concat(Enumerable.Range(1, 8).Select(i => (float)i - 7f / 8f))
         .ToList();
-    public static bool BeatmapObjectSpawnMovementData_Init_Prefix(float startNoteJumpMovementSpeed, float startBpm, ref BeatmapObjectSpawnMovementData.NoteJumpValueType noteJumpValueType, ref float noteJumpValue)
-    {
 
-        float beatDuration = 60f / startBpm;
-        float minReactionTime, targetReactionTime, radius;
+    public static bool VariableMovementDataProvider_Init_Prefix(float startHalfJumpDurationInBeats, float maxHalfJumpDistance, float noteJumpMovementSpeed, float minRelativeNoteJumpSpeed, float bpm, ref BeatmapObjectSpawnMovementData.NoteJumpValueType noteJumpValueType, ref float noteJumpValue, Vector3 centerPosition, Vector3 forwardVector){
+    //public static bool BeatmapObjectSpawnMovementData_Init_Prefix(float startNoteJumpMovementSpeed, float startBpm, ref BeatmapObjectSpawnMovementData.NoteJumpValueType noteJumpValueType, ref float noteJumpValue)
+    //{
 
-        Plugin.Log.Info($"Map NJS: {startNoteJumpMovementSpeed}");
-        Plugin.Log.Info($"Map BPM: {startBpm:f2} ({beatDuration*1000f:f0}ms per beat)");
-        Plugin.Log.Info($"Jump Setting: {Plugin.Config.jumpSetting.NameWithSpaces():f2}");
+        float beatDuration = 60f / bpm;
+
+        Plugin.Log.Info($"VariableMovementDataProvider_Init NJS: {noteJumpMovementSpeed}");
+        Plugin.Log.Info($"VariableMovementDataProvider_Init BPM: {bpm:f2} ({beatDuration*1000f:f0}ms per beat)");
+        Plugin.Log.Info($"VariableMovementDataProvider_Init Jump Setting: {Plugin.Config.jumpSetting.NameWithSpaces():f2}");
 
         switch (Plugin.Config.jumpSetting)
         {
@@ -48,11 +49,11 @@ public static class ProJumpPatch
                 return true;
             case ProJumpSetting.JumpDistance:
                 noteJumpValueType = BeatmapObjectSpawnMovementData.NoteJumpValueType.JumpDuration;
-                noteJumpValue = ProUtil.CalculateReactionTimeSeconds(Plugin.Config.jumpDistance, startNoteJumpMovementSpeed);
+                noteJumpValue = ProUtil.CalculateReactionTimeSeconds(Plugin.Config.jumpDistance, noteJumpMovementSpeed);
                 return true;
             case ProJumpSetting.HouseSpecial:
                 noteJumpValueType = BeatmapObjectSpawnMovementData.NoteJumpValueType.JumpDuration;
-                noteJumpValue = HouseSpecial(startBpm, startNoteJumpMovementSpeed);
+                noteJumpValue = HouseSpecial(bpm, noteJumpMovementSpeed);
                 return true;
             default:
                 return true;
@@ -88,25 +89,22 @@ public static class ProJumpPatch
         return beatFraction * beatDuration;
     }
 
-    public static BeatmapObjectSpawnMovementData beatmapObjectSpawnMovementData { get; private set; } = null;
-
-    public static void BeatmapObjectSpawnMovementData_Init_Postfix(BeatmapObjectSpawnMovementData __instance, float ____jumpDuration,float ____jumpDistance)
+    public static void VariableMovementDataProvider_Init_Postfix(VariableMovementDataProvider __instance, float ____jumpDuration,float ____jumpDistance)
     {
-        Plugin.Log.Info("Map Loading With Reaction Time: " + (____jumpDuration * 500.0f) + "ms");
-        Plugin.Log.Info("Map Loading With JumpDistance: " + ____jumpDistance + "m");
-        beatmapObjectSpawnMovementData = __instance;
+        Plugin.Log.Info("VariableMovementDataProvider_Init Reaction Time: " + (____jumpDuration * 500.0f) + "ms");
+        Plugin.Log.Info("VariableMovementDataProvider_Init JumpDistance: " + ____jumpDistance + "m");
     }
 
     public static void Init()
     {
         Plugin.harmony.Patch(
-            original: typeof(BeatmapObjectSpawnMovementData).GetMethod(nameof(BeatmapObjectSpawnMovementData.Init)),
-            prefix: new HarmonyMethod(typeof(ProJumpPatch).GetMethod(nameof(ProJumpPatch.BeatmapObjectSpawnMovementData_Init_Prefix)))
+            original: typeof(VariableMovementDataProvider).GetMethod(nameof(VariableMovementDataProvider.Init)),
+            prefix: new HarmonyMethod(typeof(ProJumpPatch).GetMethod(nameof(ProJumpPatch.VariableMovementDataProvider_Init_Prefix)))
         );
 
         Plugin.harmony.Patch(
-            original: typeof(BeatmapObjectSpawnMovementData).GetMethod(nameof(BeatmapObjectSpawnMovementData.Init)),
-            postfix: new HarmonyMethod(typeof(ProJumpPatch).GetMethod(nameof(ProJumpPatch.BeatmapObjectSpawnMovementData_Init_Postfix)))
+            original: typeof(VariableMovementDataProvider).GetMethod(nameof(VariableMovementDataProvider.Init)),
+            postfix: new HarmonyMethod(typeof(ProJumpPatch).GetMethod(nameof(ProJumpPatch.VariableMovementDataProvider_Init_Postfix)))
         );
     }
 }

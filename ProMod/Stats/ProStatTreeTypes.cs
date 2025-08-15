@@ -27,10 +27,13 @@ namespace ProMod.Stats
         private static List<NoteType> noteTypes = new List<NoteType>()
         {
             NoteType.Normal,
-            NoteType.SliderHead,
-            NoteType.SliderTail,
-            NoteType.BurstSliderHead,
-            NoteType.BurstSliderElement
+            NoteType.ArcHead,
+            NoteType.ArcTail,
+            NoteType.ChainHead,
+            NoteType.ChainLink,
+            NoteType.ArcHeadArcTail,
+            NoteType.ChainHeadArcTail,
+            NoteType.ChainLinkArcHead
         };
         private static List<SaberType> saberTypes = new List<SaberType>() { SaberType.SaberA, SaberType.SaberB };
         private static List<NoteDirection> noteDirections = new List<NoteDirection>()
