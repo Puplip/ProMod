@@ -262,6 +262,7 @@
 						<toggle-setting text="FixMRAlpha" value="UIValue_HMDLayerFixMRAlpha" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="GrabPassTexture1" value="UIValue_HMDLayerGrabPassTexture1" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="DontShowInExternalMRCamera" value="UIValue_HMDLayerDontShowInExternalMRCamera" apply-on-change="true" bind-value="true"></toggle-setting>
+						<toggle-setting text="ScreenDisplacement" value="UIValue_HMDLayerScreenDisplacement" apply-on-change="true" bind-value="true"></toggle-setting>
 					</vertical>
 				</tab>
 
@@ -269,7 +270,6 @@
 					<vertical child-control-height='false' child-expand-height='false' pad-top='2'>
 						<toggle-setting text="ThirdPerson" value="UIValue_HMDLayerThirdPerson" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="FirstPerson" value="UIValue_HMDLayerFirstPerson" apply-on-change="true" bind-value="true"></toggle-setting>
-						<toggle-setting text="Layer7" value="UIValue_HMDLayerLayer7" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="Event" value="UIValue_HMDLayerEvent" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="MRForegroundClipPlane" value="UIValue_HMDLayerMRForegroundClipPlane" apply-on-change="true" bind-value="true"></toggle-setting>
 						<toggle-setting text="Reserved" value="UIValue_HMDLayerReserved" apply-on-change="true" bind-value="true"></toggle-setting>

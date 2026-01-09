@@ -103,11 +103,11 @@ internal class ProDisplayTabUI : ProUI, IInitializable, IDisposable
         get => Plugin.Config.hmdCameraMask.FirstPerson;
         set { Plugin.Config.hmdCameraMask.FirstPerson = value; Plugin.Config.Save(); }
     }
-    [UIValue("UIValue_HMDLayerLayer7")]
-    private bool UIValue_HMDLayerLayer7
+    [UIValue("UIValue_HMDLayerScreenDisplacement")]
+    private bool UIValue_HMDLayerScreenDisplacement
     {
-        get => Plugin.Config.hmdCameraMask.Layer7;
-        set { Plugin.Config.hmdCameraMask.Layer7 = value; Plugin.Config.Save(); }
+        get => Plugin.Config.hmdCameraMask.ScreenDisplacement;
+        set { Plugin.Config.hmdCameraMask.ScreenDisplacement = value; Plugin.Config.Save(); }
     }
     [UIValue("UIValue_HMDLayerNote")]
     private bool UIValue_HMDLayerNote

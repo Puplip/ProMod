@@ -196,7 +196,7 @@ namespace ProMod
         public bool Water                      { get => GetLayer(VisibilityLayer.Water                     ); set => SetLayer(VisibilityLayer.Water                     , value); }
         public bool UI                         { get => GetLayer(VisibilityLayer.UI                        ); set => SetLayer(VisibilityLayer.UI                        , value); }
         public bool FirstPerson                { get => GetLayer(VisibilityLayer.FirstPerson               ); set => SetLayer(VisibilityLayer.FirstPerson               , value); }
-        public bool Layer7                     { get => GetLayer(VisibilityLayer.Layer7                    ); set => SetLayer(VisibilityLayer.Layer7                    , value); }
+        public bool HmdOnly { get => GetLayer(VisibilityLayer.HmdOnly); set => SetLayer(VisibilityLayer.HmdOnly, value); }
         public bool Note                       { get => GetLayer(VisibilityLayer.Note                      ); set => SetLayer(VisibilityLayer.Note                      , value); }
         public bool NoteDebris                 { get => GetLayer(VisibilityLayer.NoteDebris                ); set => SetLayer(VisibilityLayer.NoteDebris                , value); }
         public bool Avatar                     { get => GetLayer(VisibilityLayer.Avatar                    ); set => SetLayer(VisibilityLayer.Avatar                    , value); }
@@ -206,7 +206,7 @@ namespace ProMod
         public bool Environment                { get => GetLayer(VisibilityLayer.Environment               ); set => SetLayer(VisibilityLayer.Environment               , value); }
         public bool GrabPassTexture1           { get => GetLayer(VisibilityLayer.GrabPassTexture1          ); set => SetLayer(VisibilityLayer.GrabPassTexture1          , value); }
         public bool CutEffectParticles         { get => GetLayer(VisibilityLayer.CutEffectParticles        ); set => SetLayer(VisibilityLayer.CutEffectParticles        , value); }
-        public bool HmdOnly                    { get => GetLayer(VisibilityLayer.HmdOnly                   ); set => SetLayer(VisibilityLayer.HmdOnly                   , value); }
+        public bool ScreenDisplacement         { get => GetLayer(VisibilityLayer.ScreenDisplacement        ); set => SetLayer(VisibilityLayer.ScreenDisplacement        , value); }
         public bool DesktopOnly                { get => GetLayer(VisibilityLayer.DesktopOnly               ); set => SetLayer(VisibilityLayer.DesktopOnly               , value); }
         public bool NonReflectedParticles      { get => GetLayer(VisibilityLayer.NonReflectedParticles     ); set => SetLayer(VisibilityLayer.NonReflectedParticles     , value); }
         public bool EnvironmentPhysics         { get => GetLayer(VisibilityLayer.EnvironmentPhysics        ); set => SetLayer(VisibilityLayer.EnvironmentPhysics        , value); }
